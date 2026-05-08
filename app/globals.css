@@ -13,6 +13,7 @@
   --sage-dark:    #5C8470;
   --sage:         #7BA38C;
   --sage-light:   #9EC4AC;
+  --sage-glow:    rgba(123,163,140,0.35);
 
   /* Gold */
   --gold-dark:    #B08A40;
@@ -55,6 +56,7 @@
   /* Motion */
   --ease-out:     cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth:  cubic-bezier(0.4, 0, 0.2, 1);
   --duration-fast:  150ms;
   --duration-base:  250ms;
   --duration-slow:  400ms;
@@ -115,7 +117,7 @@ img { max-width: 100%; display: block; }
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-base) var(--ease-out);
   white-space: nowrap;
   letter-spacing: -0.01em;
   position: relative;
@@ -136,8 +138,8 @@ img { max-width: 100%; display: block; }
   color: white;
   box-shadow: 0 4px 16px rgba(123,163,140,0.3);
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(123,163,140,0.4); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(123,163,140,0.45); }
+.btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(123,163,140,0.2); }
 
 .btn-ghost {
   background: var(--glass-light);
@@ -151,13 +153,14 @@ img { max-width: 100%; display: block; }
   color: white;
   box-shadow: var(--shadow-glow-gold);
 }
+.btn-gold:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212,168,92,0.4); }
 
 .btn-outline-sage {
   background: transparent;
   color: var(--sage);
   border: 1.5px solid var(--sage);
 }
-.btn-outline-sage:hover { background: rgba(123,163,140,0.1); }
+.btn-outline-sage:hover { background: rgba(123,163,140,0.1); transform: translateY(-1px); }
 
 .btn-full   { width: 100%; }
 .btn-sm     { padding: 7px 14px; font-size: 0.8125rem; }
@@ -190,18 +193,19 @@ img { max-width: 100%; display: block; }
   padding: 12px 16px;
   font-size: 0.9375rem;
   color: var(--warm-white);
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast), background var(--duration-fast);
   outline: none;
 }
 .input:focus {
   border-color: var(--sage);
   box-shadow: 0 0 0 3px rgba(123,163,140,0.12);
+  background: rgba(32, 45, 78, 0.9);
 }
 .input::placeholder { color: var(--muted-dark); }
 
 /* ─── KEYFRAMES ───────────────────────────────────────────── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeIn {
@@ -209,7 +213,7 @@ img { max-width: 100%; display: block; }
   to   { opacity: 1; }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.92); }
   to   { opacity: 1; transform: scale(1); }
 }
 @keyframes float {
@@ -232,8 +236,20 @@ img { max-width: 100%; display: block; }
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%       { transform: scale(1.08); opacity: 1; }
+}
+@keyframes gentleSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
 
 /* ─── ANIMATION UTILITIES ─────────────────────────────────── */
-.animate-fade-in-up  { animation: fadeInUp 0.4s var(--ease-out) both; }
-.animate-scale-in    { animation: scaleIn 0.35s var(--ease-out) both; }
-.animate-fade-in     { animation: fadeIn 0.3s var(--ease-out) both; }
+.animate-fade-in-up  { animation: fadeInUp 0.5s var(--ease-out) both; }
+.animate-scale-in    { animation: scaleIn 0.4s var(--ease-out) both; }
+.animate-fade-in     { animation: fadeIn 0.35s var(--ease-out) both; }

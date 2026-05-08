@@ -1,22 +1,42 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import styles from './page.module.css'
 
 export default function RootPage() {
   const router = useRouter()
+  const [visible, setVisible] = useState(false)
+
   useEffect(() => {
-    const onboarded = localStorage.getItem('intent_onboarded')
-    router.replace(onboarded === 'true' ? '/home' : '/onboarding')
+    setVisible(true)
+    const timeout = setTimeout(() => {
+      const onboarded = localStorage.getItem('intent_onboarded')
+      router.replace(onboarded === 'true' ? '/home' : '/onboarding')
+    }, 1800)
+    return () => clearTimeout(timeout)
   }, [router])
+
   return (
-    <div style={{
-      minHeight: '100dvh',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#0D1728', color: '#7BA38C', fontSize: '2rem',
-      fontFamily: 'system-ui', letterSpacing: '0.05em',
-      animation: 'pulse 1.2s ease-in-out infinite'
-    }}>
-      ◈
+    <div className={styles.splash}>
+      {/* Ambient orbs */}
+      <div className={styles.orbContainer} aria-hidden>
+        <div className={styles.orb1} />
+        <div className={styles.orb2} />
+        <div className={styles.orb3} />
+      </div>
+
+      <div className={`${styles.logoWrap} ${visible ? styles.logoVisible : ''}`}>
+        {/* Glowing ring behind logo */}
+        <div className={styles.glowRing} />
+        <div className={styles.logoMark}>◈</div>
+        <div className={styles.logoText}>intent</div>
+        <div className={styles.tagline}>Dating with purpose</div>
+
+        {/* Loading dots */}
+        <div className={styles.loadDots}>
+          <span /><span /><span />
+        </div>
+      </div>
     </div>
   )
 }

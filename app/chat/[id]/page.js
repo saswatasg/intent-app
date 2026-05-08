@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import MobileShell from '@/components/layout/MobileShell'
 import { CONVERSATIONS, formatTimeAgo, getDepthColor, getDepthLabel } from '@/lib/mockData'
+import { supabase } from '@/lib/supabase'
 import styles from './page.module.css'
 
 const AI_REPLIES = [
@@ -99,6 +100,30 @@ export default function ChatPage({ params }) {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, typing])
 
+  // Supabase Realtime Subscription
+  useEffect(() => {
+    const channel = supabase.channel('realtime:messages')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${id}` }, payload => {
+        const newMsg = payload.new;
+        // Check if we didn't already add it locally
+        setMessages(prev => {
+          if (prev.find(m => m.id === newMsg.id)) return prev;
+          return [...prev, {
+            id: newMsg.id,
+            senderId: newMsg.sender_id,
+            content: newMsg.content,
+            sentAt: new Date(newMsg.created_at),
+            type: newMsg.sender_id === 'user_self' ? 'sent' : 'received'
+          }]
+        })
+      })
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [id])
+
   const checkMilestone = (d) => {
     for (const m of DEPTH_MILESTONES) {
       if (d >= m.threshold && !shownMilestones.current.has(m.threshold)) {
@@ -109,13 +134,18 @@ export default function ChatPage({ params }) {
     }
   }
 
-  const send = (text) => {
+  const send = async (text) => {
     const t = text.trim()
     if (!t) return
-    const msg = { id: `msg_${Date.now()}`, senderId: 'user_self', content: t, sentAt: new Date(), readAt: null, type: 'sent' }
+    const msgId = `msg_${Date.now()}`
+    const msg = { id: msgId, senderId: 'user_self', content: t, sentAt: new Date(), readAt: null, type: 'sent' }
     setMessages(prev => [...prev, msg])
     setInput('')
     setShowIce(false)
+    
+    // Simulate API match saving (Fail silently if DB not set up)
+    supabase.from('messages').insert([{ id: msgId, match_id: id, sender_id: 'user_self', receiver_id: conv.partnerId, content: t }]).then()
+
     const newDepth = Math.min(depth + 1.8 + Math.random() * 2, 95)
     setDepth(newDepth)
     checkMilestone(newDepth)
@@ -123,13 +153,19 @@ export default function ChatPage({ params }) {
     const delay = 1600 + Math.random() * 1400
     setTimeout(() => {
       setTyping(false)
+      const replyId = `reply_${Date.now()}`
+      const replyContent = AI_REPLIES[Math.floor(Math.random() * AI_REPLIES.length)]
       const reply = {
-        id: `reply_${Date.now()}`,
+        id: replyId,
         senderId: conv.partnerId,
-        content: AI_REPLIES[Math.floor(Math.random() * AI_REPLIES.length)],
+        content: replyContent,
         sentAt: new Date(), readAt: new Date(), type: 'received'
       }
       setMessages(prev => [...prev, reply])
+      
+      // Simulate reply from AI
+      supabase.from('messages').insert([{ id: replyId, match_id: id, sender_id: conv.partnerId, receiver_id: 'user_self', content: replyContent }]).then()
+
       const d2 = Math.min(newDepth + 1.5, 95)
       setDepth(d2)
       checkMilestone(d2)

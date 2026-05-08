@@ -62,13 +62,13 @@
 .statusLogo {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-size: 0.9375rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--warm-white);
 }
-.logoMark { color: var(--sage); font-size: 1.125rem; }
+.logoMark { color: var(--sage); font-size: 1.125rem; filter: drop-shadow(0 0 6px rgba(123,163,140,0.3)); }
 .logoWord { color: var(--warm-white); }
 .statusRight {
   display: flex;
@@ -99,9 +99,9 @@
   justify-content: space-around;
   align-items: center;
   padding: 6px 8px 22px;
-  background: rgba(13, 23, 40, 0.97);
+  background: rgba(10, 18, 32, 0.98);
   border-top: 1px solid var(--border);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
   flex-shrink: 0;
 }
 .navItem {
@@ -112,7 +112,7 @@
   padding: 6px 14px;
   border-radius: var(--radius-lg);
   text-decoration: none;
-  transition: background 0.15s;
+  transition: all 0.2s var(--ease-out);
   position: relative;
 }
 .navItem:hover { background: rgba(255,255,255,0.04); }
@@ -122,23 +122,24 @@
   position: absolute;
   top: 0; left: 50%;
   transform: translateX(-50%);
-  width: 4px; height: 4px;
+  width: 5px; height: 5px;
   background: var(--sage-light);
   border-radius: 50%;
-  box-shadow: 0 0 8px var(--sage), 0 0 12px var(--sage);
+  box-shadow: 0 0 8px var(--sage), 0 0 16px var(--sage);
+  animation: breathe 2s ease-in-out infinite;
 }
 .navIcon {
   font-size: 1.25rem;
   line-height: 1;
-  transition: color 0.15s, transform 0.15s;
+  transition: color 0.2s, transform 0.2s var(--ease-spring);
 }
-.navActive .navIcon { transform: scale(1.1); }
+.navActive .navIcon { transform: scale(1.15); }
 .navLabel {
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  transition: color 0.15s;
+  transition: color 0.2s;
 }
 .navAvatar {
   width: 26px;
@@ -147,9 +148,12 @@
   overflow: hidden;
   position: relative;
   border: 1.5px solid var(--muted-dark);
-  transition: border-color 0.15s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.navAvatarActive { border-color: var(--sage); box-shadow: 0 0 0 2px rgba(123,163,140,0.25); }
+.navAvatarActive {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 2px rgba(123,163,140,0.25), 0 0 10px rgba(123,163,140,0.15);
+}
 
 /* Mobile — full screen */
 @media (max-width: 430px) {
@@ -165,4 +169,8 @@
 @keyframes floatOrb {
   0%, 100% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(-15px, -15px) scale(1.05); }
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%       { transform: scale(1.08); opacity: 1; }
 }
