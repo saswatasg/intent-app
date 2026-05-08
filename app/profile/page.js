@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import MobileShell from '@/components/layout/MobileShell'
 import { CURRENT_USER, ACHIEVEMENTS } from '@/lib/mockData'
+import { MODULES, getModuleTier } from '@/lib/modules'
 import styles from './page.module.css'
 
 export default function ProfilePage() {
@@ -60,6 +61,21 @@ export default function ProfilePage() {
             <div className={styles.completionNote}>Add a voice intro to reach 100% — unlocks 2× match priority</div>
           </div>
         )}
+
+        {/* Compatibility Modules */}
+        <div className={styles.section}>
+          <div className={styles.sLabel}>Compatibility modules</div>
+          <Link href="/modules" className={styles.modulesCard}>
+            <div className={styles.modulesLeft}>
+              <div className={styles.modulesTitle}>🧠 2/6 modules completed</div>
+              <div className={styles.modulesSub}>Complete more modules to improve match accuracy</div>
+              <div className={styles.modulesTier}>
+                <span className={styles.modulesTierBadge}>🔓 Basic · ~55% accuracy</span>
+              </div>
+            </div>
+            <span className={styles.modulesArrow}>→</span>
+          </Link>
+        </div>
 
         {/* Personality snapshot */}
         <div className={styles.section}>

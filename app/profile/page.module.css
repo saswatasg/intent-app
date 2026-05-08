@@ -53,6 +53,16 @@
 .promptQ { font-size: 0.6875rem; color: var(--sage); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
 .promptA { font-size: 0.9375rem; color: var(--warm-white); line-height: 1.6; font-style: italic; }
 
+/* MODULES CARD */
+.modulesCard { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(123,163,140,0.06), rgba(27,42,74,0)); border: 1px solid rgba(123,163,140,0.2); border-radius: var(--radius-lg); padding: 14px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+.modulesCard:hover { border-color: rgba(123,163,140,0.4); transform: translateX(2px); }
+.modulesLeft { flex: 1; }
+.modulesTitle { font-size: 0.9375rem; font-weight: 700; color: var(--warm-white); }
+.modulesSub { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+.modulesTier { margin-top: 6px; }
+.modulesTierBadge { font-size: 0.6875rem; color: var(--gold); background: rgba(212,168,92,0.1); border: 1px solid rgba(212,168,92,0.25); border-radius: var(--radius-full); padding: 3px 10px; }
+.modulesArrow { color: var(--sage); font-size: 1.125rem; flex-shrink: 0; }
+
 /* UPGRADE */
 .upgradeCard { margin: 12px 16px; background: linear-gradient(135deg, rgba(212,168,92,0.1), rgba(27,42,74,0)); border: 1px solid rgba(212,168,92,0.28); border-radius: var(--radius-xl); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
 .upgradeLeft { flex: 1; }
