@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { ENTRY_MODULE } from '@/lib/modules'
 import styles from './page.module.css'
