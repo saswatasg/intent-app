@@ -1,0 +1,16 @@
+{
+  "name": "Intent — Where meaningful connections begin",
+  "short_name": "Intent",
+  "description": "A high-intent dating platform. No swiping. 3 curated matches every 48 hours.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D1728",
+  "theme_color": "#1B2A4A",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "categories": ["lifestyle", "social"],
+  "lang": "en-IN"
+}
