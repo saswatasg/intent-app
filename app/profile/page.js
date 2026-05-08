@@ -67,10 +67,10 @@ export default function ProfilePage() {
           <div className={styles.sLabel}>Compatibility modules</div>
           <Link href="/modules" className={styles.modulesCard}>
             <div className={styles.modulesLeft}>
-              <div className={styles.modulesTitle}>🧠 2/6 modules completed</div>
+              <div className={styles.modulesTitle}>🧠 1/7 modules completed</div>
               <div className={styles.modulesSub}>Complete more modules to improve match accuracy</div>
               <div className={styles.modulesTier}>
-                <span className={styles.modulesTierBadge}>🔓 Basic · ~55% accuracy</span>
+                <span className={styles.modulesTierBadge}>🔓 Starter · ~50% accuracy</span>
               </div>
             </div>
             <span className={styles.modulesArrow}>→</span>
@@ -118,14 +118,49 @@ export default function ProfilePage() {
           ))}
         </div>
 
-        {/* Upgrade */}
-        <div className={styles.upgradeCard}>
+        {/* Refer */}
+        <div className={styles.upgradeCard} style={{ background: 'linear-gradient(135deg, rgba(37,211,102,0.1), rgba(123,163,140,0.05))', borderColor: 'rgba(37,211,102,0.3)', marginBottom: '16px' }}>
           <div className={styles.upgradeLeft}>
-            <div className={styles.upgradeTitle}>Unlock Premium ⭐</div>
-            <div className={styles.upgradeSub}>4 matches/cycle · Unlimited insights · See who passed on you</div>
+            <div className={styles.upgradeTitle} style={{ color: 'var(--sage-light)' }}>Invite friends, get perks ✨</div>
+            <div className={styles.upgradeSub}>Earn free Plus, extra matches, and badges.</div>
           </div>
-          <button className="btn btn-gold btn-sm" style={{ whiteSpace: 'nowrap' }}>₹499/mo</button>
+          <button className="btn btn-sage btn-sm" onClick={() => router.push('/refer')} style={{ whiteSpace: 'nowrap' }}>Invite</button>
         </div>
+
+        {/* Upgrade / Premium Status */}
+        {(!user.premiumTier || user.premiumTier === 'free' || user.premiumTier === 'plus') && (
+          <div className={styles.upgradeCard} onClick={() => router.push('/upgrade')} style={{ cursor: 'pointer' }}>
+            <div className={styles.upgradeLeft}>
+              <div className={styles.upgradeTitle}>
+                {user.premiumTier === 'plus' ? 'Upgrade to Marriage Track ⭐' : 'Unlock Premium ⭐'}
+              </div>
+              <div className={styles.upgradeSub}>
+                {user.premiumTier === 'plus' ? 'Get coaching and priority matching' : '4 matches/cycle · Unlimited insights · See who passed on you'}
+              </div>
+            </div>
+            <button className="btn btn-gold btn-sm" style={{ whiteSpace: 'nowrap' }} onClick={(e) => { e.stopPropagation(); router.push('/upgrade') }}>
+              {user.premiumTier === 'plus' ? 'View' : '₹499/mo'}
+            </button>
+          </div>
+        )}
+
+        {user.premiumTier === 'marriage' && (
+          <div className={styles.upgradeCard} style={{ background: 'linear-gradient(135deg, rgba(212,168,92,0.1), rgba(195,149,70,0.05))', borderColor: 'rgba(212,168,92,0.3)' }}>
+            <div className={styles.upgradeLeft}>
+              <div className={styles.upgradeTitle} style={{ color: 'var(--gold)' }}>Marriage Track Active 👑</div>
+              <div className={styles.upgradeSub}>Priority matching and coaching unlocked.</div>
+            </div>
+            <button className="btn btn-gold btn-sm" onClick={() => router.push('/coaching')} style={{ whiteSpace: 'nowrap' }}>Book Coaching</button>
+          </div>
+        )}
+
+        {user.premiumTier === 'free_women' && (
+          <div className={styles.upgradeCard} style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'var(--border-light)', justifyContent: 'center' }}>
+            <div className={styles.upgradeTitle} style={{ color: 'var(--warm-white)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ color: 'var(--sage)' }}>✓</span> Verified — Premium features included
+            </div>
+          </div>
+        )}
 
         {/* Edit */}
         <div className={styles.actions}>

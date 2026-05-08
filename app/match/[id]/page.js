@@ -174,7 +174,7 @@ export default function MatchRevealPage({ params }) {
 
         {/* AI Explanation */}
         <div className={styles.explanationCard}>
-          <div className={styles.explanationLabel}>Why we matched you</div>
+          <div className={styles.explanationLabel}>Based on your responses across Core Values, Emotional Style, and Communication, here's what makes this work.</div>
           <p className={styles.explanationText}>
             <TypewriterText text={match.explanation} delay={300} />
           </p>

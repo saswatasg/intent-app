@@ -13,6 +13,7 @@
 .tierRing { flex-shrink: 0; }
 .tierBar { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
 .tierBarFill { height: 100%; background: linear-gradient(90deg, var(--sage-dark), var(--sage), var(--sage-light)); border-radius: 3px; transition: width 0.8s var(--ease-out); }
+.tierNudge { font-size: 0.75rem; color: var(--sage-light); margin-top: 10px; font-weight: 500; }
 
 /* SECTION */
 .sectionLabel { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; padding: 0 16px; }

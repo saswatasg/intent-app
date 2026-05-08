@@ -1,15 +1,15 @@
 import "./globals.css"
 
 export const metadata = {
-  title: 'Intent — Where meaningful connections begin',
-  description: 'A high-intent dating platform. No swiping. 3 curated matches every 48 hours.',
-  keywords: 'dating app, serious relationships, no swipe dating, compatibility, India dating',
+  title: 'Intent — Modern dating, built for intent',
+  description: "For people who want serious relationships without endless swiping. AI-curated matches. Verified profiles. Built for India's 24-30s.",
+  keywords: 'serious dating, intentional dating, urban India dating, marriage track, compatibility',
   authors: [{ name: 'Intent' }],
   manifest: '/manifest.json',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Intent' },
   openGraph: {
-    title: 'Intent — Where meaningful connections begin',
-    description: 'No swiping. 3 curated matches every 48 hours. Real compatibility.',
+    title: 'Intent — Modern dating, built for intent',
+    description: "For people who want serious relationships without endless swiping. AI-curated matches. Verified profiles. Built for India's 24-30s.",
     type: 'website',
   }
 }

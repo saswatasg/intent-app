@@ -1,0 +1,54 @@
+.page { display: flex; flex-direction: column; min-height: 100vh; overflow-y: auto; background: var(--bg-dark); }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; position: sticky; top: 0; background: rgba(10,18,32,0.9); backdrop-filter: blur(20px); z-index: 10; border-bottom: 1px solid var(--border); }
+.backBtn { background: none; border: none; color: var(--warm-white); font-size: 1.25rem; cursor: pointer; }
+.ghostBtn { width: 24px; }
+
+.hero { padding: 32px 20px 24px; text-align: center; }
+.heroTitle { font-size: 1.75rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; color: var(--warm-white); }
+.heroSub { font-size: 0.9375rem; color: var(--muted); line-height: 1.5; margin-bottom: 32px; max-width: 280px; margin-inline: auto; }
+
+.pricingCards { padding: 0 20px 40px; display: flex; flex-direction: column; gap: 16px; }
+
+.card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; position: relative; overflow: hidden; transition: transform 0.2s; }
+.cardPlus { border-color: rgba(123,163,140,0.5); background: linear-gradient(135deg, var(--navy-mid), rgba(123,163,140,0.05)); }
+.cardMarriage { border-color: rgba(212,168,92,0.6); background: linear-gradient(135deg, var(--navy-mid), rgba(212,168,92,0.08)); }
+
+.cardHeader { margin-bottom: 16px; }
+.cardTag { position: absolute; top: 0; right: 24px; background: var(--sage); color: white; font-size: 0.625rem; font-weight: 800; padding: 4px 10px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+.cardTagMarriage { background: var(--gold); color: var(--navy-dark); }
+
+.cardTitle { font-size: 1.25rem; font-weight: 800; color: var(--warm-white); margin-bottom: 4px; }
+.cardPrice { font-size: 1.75rem; font-weight: 800; color: var(--warm-white); display: flex; align-items: baseline; gap: 4px; }
+.cardPriceSub { font-size: 0.8125rem; color: var(--muted); font-weight: 400; }
+.savingBadge { font-size: 0.6875rem; color: var(--sage-light); font-weight: 700; background: rgba(123,163,140,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
+
+.featuresList { list-style: none; padding: 0; margin: 0 0 20px; }
+.featureItem { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 0.875rem; color: var(--warm-white); line-height: 1.4; }
+.featureCheck { color: var(--sage); font-weight: 800; }
+.featureCheckGold { color: var(--gold); font-weight: 800; }
+.featureDim { color: var(--muted-dark); }
+
+.cardBtn { width: 100%; border: none; border-radius: var(--radius-full); padding: 14px; font-size: 0.9375rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btnCurrent { background: rgba(255,255,255,0.05); color: var(--muted); cursor: default; }
+.btnPlus { background: var(--sage); color: white; }
+.btnPlus:hover { background: var(--sage-dark); }
+.btnMarriage { background: linear-gradient(135deg, #D4A85C, #C39546); color: var(--navy-dark); }
+.btnMarriage:hover { opacity: 0.9; }
+
+.faqSection { padding: 0 20px 40px; }
+.faqItem { background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 12px; overflow: hidden; }
+.faqQuestion { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px; background: none; border: none; color: var(--warm-white); font-size: 0.9375rem; font-weight: 600; text-align: left; cursor: pointer; }
+.faqAnswer { padding: 0 16px 16px; font-size: 0.875rem; color: var(--muted); line-height: 1.5; border-top: 1px solid var(--border); margin-top: 4px; padding-top: 12px; }
+
+/* Razorpay Modal Overlay */
+.rpOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.2s; }
+.rpModal { background: white; width: 100%; max-width: 400px; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 24px; animation: slideUp 0.3s cubic-bezier(0.2,0.8,0.2,1); color: #333; }
+.rpHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.rpTitle { font-size: 1.125rem; font-weight: 700; color: #1a1a1a; }
+.rpClose { background: none; border: none; font-size: 1.25rem; color: #666; cursor: pointer; }
+.rpDetail { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9375rem; color: #444; }
+.rpTotal { display: flex; justify-content: space-between; margin: 20px 0; font-size: 1.25rem; font-weight: 800; color: #1a1a1a; border-top: 1px solid #eee; padding-top: 16px; }
+.rpBtn { width: 100%; background: #3399cc; color: white; border: none; border-radius: 6px; padding: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 8px; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }

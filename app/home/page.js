@@ -8,6 +8,7 @@ import {
   MATCHES, NEXT_MATCH_TIME, CURRENT_USER, ACHIEVEMENTS,
   formatCountdown, getDepthColor, getDepthLabel
 } from '@/lib/mockData'
+import { getModuleTier, getNextAccuracyNudge } from '@/lib/modules'
 import styles from './page.module.css'
 
 /* ─── Countdown Ring ─── */
@@ -37,8 +38,8 @@ function CountdownTimer({ target }) {
         </div>
       </div>
       <div className={styles.countdownText}>
-        <div className={styles.countdownTitle}>Next matches arriving</div>
-        <div className={styles.countdownSub}>3 people curated for you · 8:00 PM IST</div>
+        <div className={styles.countdownTitle}>Your next match arrives at 8:00 PM</div>
+        <div className={styles.countdownSub}>3 people curated for you</div>
         <div className={styles.pulseRow}>
           <span /><span /><span />
         </div>
@@ -96,7 +97,7 @@ function SkipModal({ onClose, onConfirm }) {
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.modalHandle} />
-        <div className={styles.modalTitle}>Why are you passing?</div>
+        <div className={styles.modalTitle}>Help us understand — what didn't fit?</div>
         <div className={styles.modalSub}>Helps us improve your next cycle</div>
         <div className={styles.modalOptions}>
           {SKIP_REASONS.map((r, i) => (
@@ -140,11 +141,16 @@ function MatchCard({ match, index }) {
             style={{ objectFit: 'cover', objectPosition: 'top' }} sizes="350px" priority={index === 0} />
           <div className={styles.matchPhotoGrad} />
 
-          {/* Verify badge */}
-          <div className={styles.matchVerify}>
+          {/* Verify & Resurfaced badges */}
+          <div className={styles.matchVerify} style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-start' }}>
             <span className={match.verified === 'id' ? styles.badgeGold : styles.badgeSage}>
               {match.verified === 'id' ? '🛡 ID' : '✓ Verified'}
             </span>
+            {match.isResurfaced && (
+              <span className={styles.badgeSage} style={{ background: 'var(--sage)', color: 'white', fontWeight: 800 }}>
+                ✨ Compatibility updated
+              </span>
+            )}
           </div>
 
           {/* Name block */}
@@ -298,11 +304,54 @@ function PauseControl({ paused, onToggle }) {
   )
 }
 
+/* ─── Module Nudge ─── */
+function ModuleNudge({ completedCount }) {
+  const tier = getModuleTier(completedCount)
+  const nudge = getNextAccuracyNudge(completedCount)
+  if (!nudge || completedCount >= 4) return null
+  return (
+    <Link href="/modules" className={styles.nudgeCard}>
+      <div className={styles.nudgeLeft}>
+        <div className={styles.nudgeAccuracy}>
+          <span className={styles.nudgeAccuracyNum}>{tier.matchAccuracy}</span>
+          <span className={styles.nudgeAccuracyLabel}>match accuracy</span>
+        </div>
+        <div className={styles.nudgeText}>{nudge}</div>
+      </div>
+      <div className={styles.nudgeArrow}>→</div>
+    </Link>
+  )
+}
+
+/* ─── Referral Banner ─── */
+function ReferralBanner() {
+  return (
+    <Link href="/refer" className={styles.nudgeCard} style={{ background: 'linear-gradient(135deg, rgba(37,211,102,0.08), rgba(123,163,140,0.05))', borderColor: 'rgba(37,211,102,0.25)', marginTop: 0 }}>
+      <div className={styles.nudgeLeft}>
+        <div className={styles.nudgeAccuracy}>
+          <span className={styles.nudgeAccuracyNum} style={{ color: '#25D366' }}>✨</span>
+          <span className={styles.nudgeAccuracyLabel} style={{ color: 'var(--warm-white)' }}>Invite friends</span>
+        </div>
+        <div className={styles.nudgeText}>Skip waitlists & earn extra matches</div>
+      </div>
+      <div className={styles.nudgeArrow} style={{ color: '#25D366' }}>→</div>
+    </Link>
+  )
+}
+
 /* ─── Main ─── */
 export default function HomePage() {
   const [tab, setTab] = useState('matches')
   const [paused, setPaused] = useState(false)
   const user = CURRENT_USER
+  // In a real app, read from localStorage/Supabase
+  const [moduleCount] = useState(() => {
+    if (typeof window === 'undefined') return 1
+    try {
+      const saved = JSON.parse(localStorage.getItem('intent_completed_modules') || '[]')
+      return saved.length || 1
+    } catch { return 1 }
+  })
 
   return (
     <MobileShell>
@@ -324,6 +373,12 @@ export default function HomePage() {
           </div>
           <IntentRing score={user.intentScore} streak={user.streak} />
         </div>
+
+        {/* ── Module Nudge ── */}
+        <ModuleNudge completedCount={moduleCount} />
+
+        {/* ── Referral Banner ── */}
+        <ReferralBanner />
 
         {/* ── Countdown ── */}
         <div className={styles.section}>

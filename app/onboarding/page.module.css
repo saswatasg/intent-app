@@ -125,9 +125,23 @@
 .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--sage); border: 3px solid var(--navy-dark); box-shadow: 0 0 8px rgba(123,163,140,0.4); cursor: pointer; }
 .sliderLabels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: var(--muted); }
 
+/* ═══ QUICK START MODULE ═══════════════════════════════════════════════════ */
+.quickStartHeader { display: flex; align-items: center; justify-content: space-between; }
+.quickStartBadge { font-size: 0.875rem; font-weight: 800; color: var(--sage-light); display: flex; align-items: center; gap: 4px; }
+.quickStartCount { font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.qDots { display: flex; gap: 6px; justify-content: center; padding: 4px 0 8px; }
+.qDot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: all 0.3s var(--ease-out); }
+.qDotActive { background: var(--sage); box-shadow: 0 0 8px rgba(123,163,140,0.5); transform: scale(1.3); }
+.qDotDone { background: var(--sage-dark); }
+
+.quickStartIntro { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--muted); background: rgba(123,163,140,0.06); border: 1px solid rgba(123,163,140,0.15); border-radius: var(--radius-md); padding: 8px 12px; animation: fadeIn 0.4s ease; }
+
 @media (max-width: 430px) {
   .page { padding: 0; }
   .phone { border-radius: 0; min-height: 100dvh; border: none; box-shadow: none; }
 }
 
 @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+

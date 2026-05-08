@@ -1,11 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { MODULES } from '@/lib/modules'
+import { ENTRY_MODULE } from '@/lib/modules'
 import styles from './page.module.css'
-
-const REQUIRED_MODULES = MODULES.filter(m => m.required).map(m => m.id)
-const MIN_MODULES = 2
 
 // ── Progress Bar ────────────────────────────────────────────────────────────
 function ProgressBar({ step, total, label }) {
@@ -127,8 +124,8 @@ function SectionIdentity({ data, setData, onNext }) {
 // ── SECTION C: Intent Gate ──────────────────────────────────────────────────
 function SectionIntent({ data, setData, onNext }) {
   const INTENT_OPTIONS = [
-    { value: 'long_term', label: 'A long-term relationship', emoji: '💚', allowed: true },
-    { value: 'marriage', label: 'Marriage within 2–3 years', emoji: '💛', allowed: true },
+    { value: 'long_term', label: 'I want a serious relationship', emoji: '💚', allowed: true },
+    { value: 'marriage', label: "I'm ready for marriage in the next 2-3 years", emoji: '💛', allowed: true },
     { value: 'casual', label: 'Something casual / just looking around', emoji: '🔴', allowed: false },
   ]
   const [blocked, setBlocked] = useState(false)
@@ -144,8 +141,8 @@ function SectionIntent({ data, setData, onNext }) {
       {blocked ? (
         <div className={styles.softGate}>
           <div className={styles.gateEmoji}>🌱</div>
-          <h2 className={styles.gateTitle}>Intent is built for meaningful connections</h2>
-          <p className={styles.gateSub}>We&apos;d love to have you when you&apos;re ready for something real.</p>
+          <h2 className={styles.gateTitle}>Built for intent</h2>
+          <p className={styles.gateSub}>Intent isn't built for casual. We respect that you might be there now — come back when you're ready for something real. We'll be here.</p>
           <button className="btn btn-outline-sage btn-full" onClick={() => setBlocked(false)}>← Go back</button>
         </div>
       ) : (
@@ -165,7 +162,7 @@ function SectionIntent({ data, setData, onNext }) {
             ))}
           </div>
           <button className={`btn btn-primary btn-full ${!data.intentLevel ? styles.btnDisabled : ''}`} onClick={onNext} disabled={!data.intentLevel} style={{ marginTop: 'auto' }}>
-            Continue to personality →
+            Almost there — 5 quick questions →
           </button>
         </>
       )}
@@ -173,147 +170,46 @@ function SectionIntent({ data, setData, onNext }) {
   )
 }
 
-// ── SECTION D: Module Picker ────────────────────────────────────────────────
-function ModulePicker({ completedModules, onSelectModule }) {
-  const completedCount = completedModules.length
-  const canProceed = completedCount >= MIN_MODULES
-
-  return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionEmoji}>🧠</div>
-        <h2 className={styles.sectionTitle}>Your compatibility profile</h2>
-        <p className={styles.sectionSub}>
-          Complete at least <strong>2 modules</strong> to start matching. 
-          The more you complete, the better your matches.
-        </p>
-      </div>
-
-      {/* Progress indicator */}
-      <div className={styles.moduleProgress}>
-        <div className={styles.moduleProgressBar}>
-          <div className={styles.moduleProgressFill} style={{ width: `${(completedCount / 6) * 100}%` }} />
-        </div>
-        <div className={styles.moduleProgressText}>
-          <span>{completedCount}/6 modules completed</span>
-          <span className={styles.moduleAccuracy}>
-            {completedCount < 2 ? '—' : completedCount < 3 ? '~55%' : completedCount < 4 ? '~70%' : completedCount < 5 ? '~82%' : completedCount < 6 ? '~90%' : '95%+'} match accuracy
-          </span>
-        </div>
-      </div>
-
-      {/* Module cards */}
-      <div className={styles.moduleGrid}>
-        {MODULES.map(mod => {
-          const done = completedModules.includes(mod.id)
-          const isRequired = mod.required
-          return (
-            <button
-              key={mod.id}
-              className={`${styles.moduleCard} ${done ? styles.moduleCardDone : ''}`}
-              style={{ '--mod-color': mod.color, '--mod-bg': mod.bgColor, '--mod-border': mod.borderColor }}
-              onClick={() => !done && onSelectModule(mod.id)}
-              disabled={done}
-            >
-              <div className={styles.moduleCardTop}>
-                <span className={styles.moduleEmoji}>{done ? '✅' : mod.emoji}</span>
-                {isRequired && !done && <span className={styles.requiredBadge}>Required</span>}
-                {done && <span className={styles.doneBadge}>Done</span>}
-              </div>
-              <div className={styles.moduleTitle}>{mod.title}</div>
-              <div className={styles.moduleDesc}>{mod.description}</div>
-              <div className={styles.moduleQuestionCount}>5 questions · ~2 min</div>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Shortcomings warning if only minimum */}
-      {completedCount >= MIN_MODULES && completedCount < 6 && (
-        <div className={styles.shortcomingsCard}>
-          <div className={styles.shortcomingsIcon}>⚠️</div>
-          <div className={styles.shortcomingsContent}>
-            <div className={styles.shortcomingsTitle}>
-              {6 - completedCount} module{6 - completedCount > 1 ? 's' : ''} remaining
-            </div>
-            <div className={styles.shortcomingsList}>
-              {completedCount < 3 && <div className={styles.shortcomingItem}>• Only 2 matches per cycle (instead of 3)</div>}
-              {completedCount < 4 && <div className={styles.shortcomingItem}>• No AI-generated icebreakers</div>}
-              {completedCount < 5 && <div className={styles.shortcomingItem}>• Limited &quot;Why we matched&quot; insights</div>}
-              {completedCount < 6 && <div className={styles.shortcomingItem}>• Missing the &quot;Complete Profile&quot; badge</div>}
-            </div>
-            <div className={styles.shortcomingsNote}>You can complete more modules anytime from your profile.</div>
-          </div>
-        </div>
-      )}
-
-      {canProceed && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
-          <button className="btn btn-primary btn-full btn-lg" onClick={() => onSelectModule('__done__')}>
-            {completedCount >= 6 ? 'Enter Intent →' : `Enter Intent (${completedCount}/6 complete) →`}
-          </button>
-          {completedCount < 6 && (
-            <div className={styles.skipNote}>You can answer more modules later from your profile</div>
-          )}
-        </div>
-      )}
-
-      {!canProceed && (
-        <div className={styles.lockMessage}>
-          <span className={styles.lockIcon}>🔒</span>
-          Complete at least {MIN_MODULES - completedCount} more module{MIN_MODULES - completedCount > 1 ? 's' : ''} to unlock matching
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ── SECTION E: Module Questionnaire ─────────────────────────────────────────
-function ModuleQuestionnaire({ moduleId, onComplete, onBack }) {
-  const mod = MODULES.find(m => m.id === moduleId)
+// ── SECTION D: Quick Start (Entry Module) ───────────────────────────────────
+function QuickStartModule({ onComplete }) {
+  const mod = ENTRY_MODULE
   const [currentQ, setCurrentQ] = useState(0)
   const [answers, setAnswers] = useState({})
 
-  if (!mod) return null
   const q = mod.questions[currentQ]
   const totalQ = mod.questions.length
   const answered = answers[q.id] !== undefined
-
-  const handleAnswer = (value) => {
-    setAnswers(prev => ({ ...prev, [q.id]: value }))
-  }
 
   const handleNext = () => {
     if (currentQ < totalQ - 1) {
       setCurrentQ(prev => prev + 1)
     } else {
-      // Module complete
-      onComplete(moduleId, answers)
+      onComplete(mod.id, answers)
     }
   }
 
   return (
     <div className={styles.section}>
-      {/* Module header */}
-      <div className={styles.moduleHeader}>
-        <button className={styles.moduleBack} onClick={currentQ > 0 ? () => setCurrentQ(prev => prev - 1) : onBack}>←</button>
-        <div className={styles.moduleHeaderInfo}>
-          <span className={styles.moduleHeaderEmoji}>{mod.emoji}</span>
-          <span className={styles.moduleHeaderTitle}>{mod.title}</span>
+      {/* Quick Start header */}
+      <div className={styles.quickStartHeader}>
+        <div className={styles.quickStartBadge}>⚡ Quick Start</div>
+        <div className={styles.quickStartCount}>{currentQ + 1} of {totalQ}</div>
+      </div>
+
+      {/* Question progress dots */}
+      <div className={styles.qDots}>
+        {mod.questions.map((_, i) => (
+          <div key={i} className={`${styles.qDot} ${i < currentQ ? styles.qDotDone : ''} ${i === currentQ ? styles.qDotActive : ''}`} />
+        ))}
+      </div>
+
+      {/* Intro text on first question */}
+      {currentQ === 0 && (
+        <div className={styles.quickStartIntro} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center', marginBottom: '16px' }}>
+          <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--warm-white)' }}>Five quick questions to set the foundation. We'll build from here.</div>
+          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)' }}>Your matches get sharper as you do.</div>
         </div>
-        <span className={styles.moduleHeaderCount}>{currentQ + 1}/{totalQ}</span>
-      </div>
-
-      {/* Question progress */}
-      <div className={styles.qProgressBar}>
-        <div className={styles.qProgressFill} style={{ width: `${((currentQ + 1) / totalQ) * 100}%`, background: mod.color }} />
-      </div>
-
-      {/* Research basis */}
-      <div className={styles.researchTag} style={{ borderColor: mod.borderColor, background: mod.bgColor }}>
-        <span className={styles.researchIcon}>📚</span>
-        <span>{mod.researchBasis}</span>
-      </div>
+      )}
 
       {/* Question card */}
       <div className={styles.questionCard} key={q.id}>
@@ -326,7 +222,7 @@ function ModuleQuestionnaire({ moduleId, onComplete, onBack }) {
           <div style={{ marginTop: 20 }}>
             <SliderInput
               value={answers[q.id] ?? 50}
-              onChange={(val) => handleAnswer(val)}
+              onChange={(val) => setAnswers(prev => ({...prev, [q.id]: val}))}
               leftLabel={q.leftLabel}
               rightLabel={q.rightLabel}
             />
@@ -340,7 +236,7 @@ function ModuleQuestionnaire({ moduleId, onComplete, onBack }) {
                 <button
                   key={i}
                   className={`${styles.answerOption} ${isSelected ? styles.answerOptionActive : ''}`}
-                  onClick={() => handleAnswer(opt.trait)}
+                  onClick={() => setAnswers(prev => ({...prev, [q.id]: opt.trait}))}
                 >
                   <span className={styles.answerLetter}>{letter}</span>
                   <span>{opt.label}</span>
@@ -358,7 +254,7 @@ function ModuleQuestionnaire({ moduleId, onComplete, onBack }) {
         disabled={!answered && q.type !== 'slider'}
         style={{ marginTop: 'auto' }}
       >
-        {currentQ < totalQ - 1 ? 'Next →' : `Complete ${mod.title} ✓`}
+        {currentQ < totalQ - 1 ? 'Next →' : "Start matching ✓"}
       </button>
     </div>
   )
@@ -367,35 +263,29 @@ function ModuleQuestionnaire({ moduleId, onComplete, onBack }) {
 // ── MAIN ONBOARDING PAGE ────────────────────────────────────────────────────
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState(1) // 1=auth, 2=identity, 3=intent, 4=modules, 5=answering
+  const [step, setStep] = useState(1) // 1=auth, 2=identity, 3=intent, 4=quick-start
   const [data, setData] = useState({ photos: [] })
-  const [completedModules, setCompletedModules] = useState([])
-  const [allAnswers, setAllAnswers] = useState({})
-  const [activeModuleId, setActiveModuleId] = useState(null)
 
-  const handleSelectModule = (moduleId) => {
-    if (moduleId === '__done__') {
-      // Save to localStorage and go to home
-      localStorage.setItem('intent_onboarded', 'true')
-      localStorage.setItem('intent_completed_modules', JSON.stringify(completedModules))
-      localStorage.setItem('intent_answers', JSON.stringify(allAnswers))
-      router.push('/home')
-      return
+  // Capture referral code if present
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get('ref');
+      if (refCode) {
+        localStorage.setItem('intent_referred_by', refCode);
+      }
     }
-    setActiveModuleId(moduleId)
-    setStep(5)
+  }, []);
+
+  const handleEntryComplete = (moduleId, answers) => {
+    // Save entry module completion and go straight to home
+    localStorage.setItem('intent_onboarded', 'true')
+    localStorage.setItem('intent_completed_modules', JSON.stringify([moduleId]))
+    localStorage.setItem('intent_answers', JSON.stringify({ [moduleId]: answers }))
+    router.push('/home')
   }
 
-  const handleModuleComplete = (moduleId, answers) => {
-    setCompletedModules(prev => [...prev, moduleId])
-    setAllAnswers(prev => ({ ...prev, [moduleId]: answers }))
-    setActiveModuleId(null)
-    setStep(4)
-  }
-
-  const STEP_LABELS = ['Verify', 'Identity', 'Intent', 'Personality', 'Module']
-  const totalSteps = step <= 3 ? 4 : (step === 4 ? 4 : 4)
-  const displayStep = step <= 3 ? step : (step === 4 ? 4 : 4)
+  const STEP_LABELS = ['Verify', 'Identity', 'Intent', 'Quick Start']
 
   return (
     <div className={styles.page}>
@@ -416,30 +306,23 @@ export default function OnboardingPage() {
               localStorage.setItem('intent_onboarded', 'true');
               router.push('/home');
             }}>Skip (Dev)</button>
-            {step > 1 && step !== 5 && (
+            {step > 1 && step < 4 && (
               <button className="btn btn-ghost btn-sm" onClick={() => setStep(step - 1)}>← Back</button>
             )}
           </div>
         </div>
 
         <ProgressBar
-          step={displayStep}
-          total={totalSteps}
-          label={step <= 3 ? `Step ${step} of 4 · ${STEP_LABELS[step - 1]}` : `Step 4 of 4 · Personality`}
+          step={step}
+          total={4}
+          label={`Step ${step} of 4 · ${STEP_LABELS[step - 1]}`}
         />
 
         <div className={styles.body}>
           {step === 1 && <SectionAuth data={data} setData={setData} onNext={() => setStep(2)} />}
           {step === 2 && <SectionIdentity data={data} setData={setData} onNext={() => setStep(3)} />}
           {step === 3 && <SectionIntent data={data} setData={setData} onNext={() => setStep(4)} />}
-          {step === 4 && <ModulePicker completedModules={completedModules} onSelectModule={handleSelectModule} />}
-          {step === 5 && activeModuleId && (
-            <ModuleQuestionnaire
-              moduleId={activeModuleId}
-              onComplete={handleModuleComplete}
-              onBack={() => { setActiveModuleId(null); setStep(4) }}
-            />
-          )}
+          {step === 4 && <QuickStartModule onComplete={handleEntryComplete} />}
         </div>
       </div>
     </div>

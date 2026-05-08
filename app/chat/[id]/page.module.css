@@ -99,3 +99,29 @@
   30% { transform: translateY(-5px); opacity: 1; }
 }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* FEEDBACK BUTTON & MODAL */
+.feedbackBtn { display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); border-radius: var(--radius-full); width: 28px; height: 28px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0; margin-right: -4px; }
+.feedbackBtn:hover { border-color: var(--gold); background: rgba(212,168,92,0.1); transform: scale(1.05); }
+
+.modalOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; animation: fadeIn 0.2s ease-out; }
+.modalCard { background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; width: 100%; max-width: 320px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.4); animation: slideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+.modalTitle { font-size: 1.125rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -0.01em; }
+.modalOptions { display: flex; flex-direction: column; gap: 10px; }
+.fbBtn { width: 100%; padding: 12px; border-radius: var(--radius-md); font-size: 0.9375rem; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; }
+.fbBtn:disabled { opacity: 0.5; pointer-events: none; }
+.fbGreen { background: rgba(123, 163, 140, 0.15); border-color: rgba(123, 163, 140, 0.4); color: var(--sage-light); }
+.fbGreen:hover { background: rgba(123, 163, 140, 0.25); transform: translateY(-1px); }
+.fbSage { background: rgba(255, 255, 255, 0.05); border-color: var(--border-light); color: var(--warm-white); }
+.fbSage:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+.fbMuted { background: transparent; border-color: var(--border); color: var(--muted); }
+.fbMuted:hover { border-color: var(--muted-dark); color: var(--warm-white); }
+.fbTextBtn { background: none; border: none; color: var(--muted); font-size: 0.8125rem; margin-top: 12px; cursor: pointer; text-decoration: underline; text-decoration-color: transparent; transition: all 0.2s; }
+.fbTextBtn:hover { color: var(--warm-white); text-decoration-color: var(--muted); }
+
+.fbChips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.fbChip { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 20px; padding: 8px 14px; font-size: 0.8125rem; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.fbChip:hover { border-color: var(--sage); color: var(--warm-white); background: rgba(123, 163, 140, 0.1); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

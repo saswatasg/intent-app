@@ -1,0 +1,40 @@
+.page { display: flex; flex-direction: column; height: 100%; overflow-y: auto; scrollbar-width: none; background: var(--bg-dark); }
+.page::-webkit-scrollbar { display: none; }
+
+.header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; position: sticky; top: 0; background: rgba(10,18,32,0.9); backdrop-filter: blur(20px); z-index: 10; border-bottom: 1px solid var(--border); }
+.backBtn { background: none; border: none; color: var(--warm-white); font-size: 1.25rem; cursor: pointer; }
+.headerTitle { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.01em; color: var(--warm-white); }
+.ghostBtn { width: 24px; } /* Spacer for centering */
+
+.hero { padding: 32px 20px 24px; text-align: center; }
+.heroTitle { font-size: 1.75rem; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 12px; background: linear-gradient(135deg, var(--warm-white), var(--sage-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.heroSub { font-size: 0.9375rem; color: var(--muted); line-height: 1.5; margin-bottom: 24px; max-width: 280px; margin-inline: auto; }
+
+.codeBox { background: var(--navy-mid); border: 1px dashed rgba(123,163,140,0.5); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 24px; position: relative; overflow: hidden; }
+.codeLabel { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sage); margin-bottom: 4px; font-weight: 700; }
+.codeValue { font-size: 2rem; font-weight: 900; letter-spacing: 0.1em; color: var(--warm-white); }
+.copyBtn { margin-top: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 0.8125rem; color: var(--warm-white); cursor: pointer; transition: all 0.2s; }
+.copyBtn:hover { background: rgba(255,255,255,0.1); border-color: var(--sage); }
+
+.waBtn { display: flex; align-items: center; justify-content: center; gap: 8px; background: #25D366; color: white; border: none; border-radius: var(--radius-full); padding: 16px; font-size: 1rem; font-weight: 700; width: 100%; cursor: pointer; box-shadow: 0 8px 24px rgba(37,211,102,0.3); transition: transform 0.2s; }
+.waBtn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,211,102,0.4); }
+
+.statsRow { display: flex; gap: 12px; margin-bottom: 32px; }
+.statCard { flex: 1; background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+.statVal { font-size: 1.5rem; font-weight: 800; color: var(--warm-white); margin-bottom: 2px; }
+.statLbl { font-size: 0.6875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.rewardsSection { padding: 0 20px 40px; }
+.sectionTitle { font-size: 0.9375rem; font-weight: 700; color: var(--warm-white); margin-bottom: 16px; letter-spacing: 0.02em; }
+
+.rewardCard { display: flex; align-items: center; gap: 14px; background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; position: relative; overflow: hidden; }
+.rewardCard.earned { border-color: rgba(212,168,92,0.5); background: linear-gradient(135deg, var(--navy-light), rgba(212,168,92,0.05)); }
+.rewardIconWrap { width: 44px; height: 44px; border-radius: 50%; background: var(--navy-mid); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; border: 1px solid var(--border); }
+.earned .rewardIconWrap { background: rgba(212,168,92,0.15); border-color: rgba(212,168,92,0.4); }
+
+.rewardInfo { flex: 1; }
+.rewardTitle { font-size: 0.9375rem; font-weight: 700; color: var(--warm-white); margin-bottom: 2px; }
+.rewardDesc { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+.rewardStatus { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 6px; }
+.statusEarned { color: var(--gold); }
+.statusPending { color: var(--muted-dark); }

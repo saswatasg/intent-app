@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import MobileShell from '@/components/layout/MobileShell'
-import { MODULES, getModuleTier } from '@/lib/modules'
+import { MODULES, ALL_MODULES, ENTRY_MODULE, getModuleTier, getNextAccuracyNudge } from '@/lib/modules'
 import styles from './page.module.css'
 
 function SliderInput({ value, onChange, leftLabel, rightLabel }) {
@@ -102,12 +102,16 @@ export default function ModulesPage() {
     setActiveModuleId(null)
 
     const tier = getModuleTier(updated.length)
-    setCelebration({ module: MODULES.find(m => m.id === moduleId), tier, count: updated.length })
+    const mod = MODULES.find(m => m.id === moduleId)
+    setCelebration({ module: mod, tier, count: updated.length })
     setTimeout(() => setCelebration(null), 4000)
   }
 
-  const tier = getModuleTier(completedModules.length)
+  const completedCount = completedModules.length
+  const tier = getModuleTier(completedCount)
+  const totalModules = MODULES.length + 1 // +1 for entry module
   const remaining = MODULES.filter(m => !completedModules.includes(m.id))
+  const nextNudge = getNextAccuracyNudge(completedCount)
 
   if (activeModuleId) {
     return (
@@ -151,42 +155,50 @@ export default function ModulesPage() {
                 <circle cx="28" cy="28" r="23" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
                 <circle cx="28" cy="28" r="23" fill="none" stroke={tier.color} strokeWidth="4"
                   strokeDasharray={+(2 * Math.PI * 23).toFixed(3)}
-                  strokeDashoffset={+((2 * Math.PI * 23) * (1 - completedModules.length / 6)).toFixed(3)}
+                  strokeDashoffset={+((2 * Math.PI * 23) * (1 - completedCount / totalModules)).toFixed(3)}
                   strokeLinecap="round" transform="rotate(-90 28 28)" />
-                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill={tier.color} fontSize="14" fontWeight="800">{completedModules.length}/6</text>
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fill={tier.color} fontSize="14" fontWeight="800">{completedCount}/{totalModules}</text>
               </svg>
             </div>
           </div>
           <div className={styles.tierBar}>
-            <div className={styles.tierBarFill} style={{ width: `${(completedModules.length / 6) * 100}%` }} />
+            <div className={styles.tierBarFill} style={{ width: `${(completedCount / totalModules) * 100}%` }} />
           </div>
+          {nextNudge && (
+            <div className={styles.tierNudge}>{nextNudge}</div>
+          )}
         </div>
 
         {/* Remaining modules */}
         {remaining.length > 0 ? (
           <>
-            <div className={styles.sectionLabel}>Continue your profile</div>
+            <div className={styles.sectionLabel}>Unlock better matches</div>
             <div className={styles.remainingList}>
-              {remaining.map(mod => (
-                <button key={mod.id} className={styles.remainingCard} onClick={() => setActiveModuleId(mod.id)}>
-                  <span className={styles.remainingEmoji}>{mod.emoji}</span>
-                  <div className={styles.remainingInfo}>
-                    <div className={styles.remainingTitle}>{mod.title}</div>
-                    <div className={styles.remainingDesc}>{mod.description}</div>
-                    <div className={styles.remainingMeta}>5 questions · ~2 min · Improves {mod.matchImpact.toLowerCase()}</div>
-                  </div>
-                  <span className={styles.remainingArrow}>→</span>
-                </button>
-              ))}
+              {remaining.map(mod => {
+                const nextTier = getModuleTier(completedCount + 1)
+                return (
+                  <button key={mod.id} className={styles.remainingCard} onClick={() => setActiveModuleId(mod.id)}>
+                    <span className={styles.remainingEmoji}>{mod.emoji}</span>
+                    <div className={styles.remainingInfo}>
+                      <div className={styles.remainingTitle}>{mod.title}</div>
+                      <div className={styles.remainingDesc}>{mod.description}</div>
+                      <div className={styles.remainingMeta}>
+                        5 questions · ~2 min · {mod.unlockMessage || `Improves ${mod.matchImpact.toLowerCase()}`}
+                      </div>
+                    </div>
+                    <span className={styles.remainingArrow}>→</span>
+                  </button>
+                )
+              })}
             </div>
 
             {/* What you're missing */}
             <div className={styles.sectionLabel}>What you&apos;re missing</div>
             <div className={styles.missingCard}>
-              {completedModules.length < 3 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--blush)' }} />Only 2 matches per cycle instead of 3</div>}
-              {completedModules.length < 4 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--gold)' }} />No AI-generated custom icebreakers</div>}
-              {completedModules.length < 5 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--sage)' }} />Limited &quot;Why we matched you&quot; insights</div>}
-              {completedModules.length < 6 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--muted)' }} />No &quot;Complete Profile&quot; badge for matches to see</div>}
+              {completedCount < 3 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--blush)' }} />Only 2 matches/day for men (3 at tier 3+)</div>}
+              {completedCount < 3 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--gold)' }} />No AI-generated custom icebreakers</div>}
+              {completedCount < 4 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--sage)' }} />Limited &quot;Why we matched you&quot; insights</div>}
+              {completedCount < 7 && <div className={styles.missingItem}><span className={styles.missingDot} style={{ background: 'var(--muted)' }} />No &quot;Complete Profile&quot; badge for matches to see</div>}
             </div>
           </>
         ) : (
@@ -203,7 +215,7 @@ export default function ModulesPage() {
             <div className={styles.sectionLabel}>Completed</div>
             <div className={styles.completedList}>
               {completedModules.map(id => {
-                const mod = MODULES.find(m => m.id === id)
+                const mod = ALL_MODULES.find(m => m.id === id)
                 return mod ? (
                   <div key={id} className={styles.completedItem}>
                     <span>{mod.emoji}</span>

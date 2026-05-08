@@ -79,6 +79,86 @@ function Bubble({ msg, partnerPhoto, partnerName }) {
   )
 }
 
+function FeedbackModal({ matchId, partnerName, onClose }) {
+  const [step, setStep] = useState(1)
+  const [outcome, setOutcome] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const submitFeedback = async (finalOutcome, followUpData = {}) => {
+    setIsSubmitting(true)
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          match_id: matchId,
+          user_id: 'user_self', // prototype static ID
+          outcome: finalOutcome,
+          ...followUpData,
+          trigger_context: 'manual'
+        })
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsSubmitting(false)
+      onClose()
+    }
+  }
+
+  const handleOutcome = (val) => {
+    setOutcome(val)
+    if (val === 'skipped') {
+      submitFeedback(val)
+    } else if (val === 'still_talking') {
+      submitFeedback(val)
+    } else {
+      setStep(2)
+    }
+  }
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modalCard}>
+        {step === 1 && (
+          <>
+            <h3 className={styles.modalTitle}>What happened with {partnerName}?</h3>
+            <div className={styles.modalOptions}>
+              <button className={`${styles.fbBtn} ${styles.fbGreen}`} onClick={() => handleOutcome('we_met')}>We met in person</button>
+              <button className={`${styles.fbBtn} ${styles.fbSage}`} onClick={() => handleOutcome('still_talking')}>Still talking, haven't met</button>
+              <button className={`${styles.fbBtn} ${styles.fbMuted}`} onClick={() => handleOutcome('didnt_click')}>Didn't click</button>
+              <button className={styles.fbTextBtn} onClick={() => handleOutcome('skipped')}>Skip this</button>
+            </div>
+          </>
+        )}
+        
+        {step === 2 && outcome === 'we_met' && (
+          <>
+            <h3 className={styles.modalTitle}>Did it go well?</h3>
+            <div className={styles.modalOptions}>
+              <button className={`${styles.fbBtn} ${styles.fbSage}`} onClick={() => submitFeedback(outcome, { went_well: 'great' })} disabled={isSubmitting}>Great!</button>
+              <button className={`${styles.fbBtn} ${styles.fbSage}`} onClick={() => submitFeedback(outcome, { went_well: 'okay' })} disabled={isSubmitting}>It was okay</button>
+              <button className={`${styles.fbBtn} ${styles.fbMuted}`} onClick={() => submitFeedback(outcome, { went_well: 'not_for_me' })} disabled={isSubmitting}>Not for me</button>
+            </div>
+          </>
+        )}
+
+        {step === 2 && outcome === 'didnt_click' && (
+          <>
+            <h3 className={styles.modalTitle}>What was missing? <span style={{fontSize:'0.8rem', color:'var(--muted)'}}>(Optional)</span></h3>
+            <div className={styles.fbChips}>
+              {['No chemistry', 'Different goals', 'Communication mismatch', 'Something off'].map(reason => (
+                <button key={reason} className={styles.fbChip} onClick={() => submitFeedback(outcome, { didnt_click_reason: reason })} disabled={isSubmitting}>{reason}</button>
+              ))}
+            </div>
+            <button className={styles.fbTextBtn} onClick={() => submitFeedback(outcome, { didnt_click_reason: 'prefer_not_to_say' })} disabled={isSubmitting}>Prefer not to say</button>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function ChatPage({ params }) {
   const { id } = use(params)
   const router = useRouter()
@@ -92,6 +172,7 @@ export default function ChatPage({ params }) {
   const [depth, setDepth] = useState(conv.depthPercent)
   const [milestone, setMilestone] = useState(null)
   const [showIce, setShowIce] = useState(false)
+  const [showFeedback, setShowFeedback] = useState(false)
   const shownMilestones = useRef(new Set())
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
@@ -175,6 +256,11 @@ export default function ChatPage({ params }) {
   return (
     <MobileShell>
       <div className={styles.page}>
+        
+        {/* Feedback Modal Overlay */}
+        {showFeedback && (
+          <FeedbackModal matchId={id} partnerName={conv.partnerName} onClose={() => setShowFeedback(false)} />
+        )}
 
         {/* Header */}
         <div className={styles.header}>
@@ -189,6 +275,9 @@ export default function ChatPage({ params }) {
               <div className={styles.partnerStatus}>{conv.isOnline ? '● Active now' : 'Recently active'}</div>
             </div>
           </div>
+          <button className={styles.feedbackBtn} onClick={() => setShowFeedback(true)} title="Rate this connection">
+            ⭐
+          </button>
           <button className={styles.insightsBtn} onClick={() => router.push(`/insights/${id}`)}>
             📊 Insights
           </button>

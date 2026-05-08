@@ -141,21 +141,51 @@ export default function SettingsPage() {
         {/* SUBSCRIPTION */}
         <div className={styles.sectionGroup}>
           <div className={styles.groupLabel}>Subscription</div>
-          <div className={styles.subCard}>
-            <div className={styles.subPlan}>
-              <div className={styles.subPlanName}>Free Plan</div>
-              <div className={styles.subPlanDesc}>3 matches/cycle · 1 insight report/month · Basic features</div>
-            </div>
-            <button className="btn btn-gold btn-sm" onClick={() => {}}>Upgrade ₹499/mo</button>
-          </div>
-          <div className={styles.subFeatureGrid}>
-            <div className={styles.subFeature}><span>✓</span> 4 matches per cycle</div>
-            <div className={styles.subFeature}><span>✓</span> Unlimited insights</div>
-            <div className={styles.subFeature}><span>✓</span> Priority matching</div>
-            <div className={styles.subFeature}><span>✓</span> See who skipped you</div>
-            <div className={styles.subFeature}><span>✓</span> Advanced filters</div>
-            <div className={styles.subFeature}><span>✓</span> Ad-free</div>
-          </div>
+          {(!user.premiumTier || user.premiumTier === 'free' || user.premiumTier === 'free_women') ? (
+            <>
+              <div className={styles.subCard}>
+                <div className={styles.subPlan}>
+                  <div className={styles.subPlanName}>{user.premiumTier === 'free_women' ? 'Verified Premium' : 'Free Plan'}</div>
+                  <div className={styles.subPlanDesc}>{user.premiumTier === 'free_women' ? 'All Plus features included' : '3 matches/cycle · Basic features'}</div>
+                </div>
+                {user.premiumTier !== 'free_women' && (
+                  <button className="btn btn-gold btn-sm" onClick={() => router.push('/upgrade')}>Upgrade ₹499/mo</button>
+                )}
+              </div>
+              {user.premiumTier !== 'free_women' && (
+                <div className={styles.subFeatureGrid}>
+                  <div className={styles.subFeature}><span>✓</span> 4 matches per cycle</div>
+                  <div className={styles.subFeature}><span>✓</span> Unlimited insights</div>
+                  <div className={styles.subFeature}><span>✓</span> Priority matching</div>
+                  <div className={styles.subFeature}><span>✓</span> Marriage Track option</div>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              <div className={styles.subCard} style={user.premiumTier === 'marriage' ? { background: 'linear-gradient(135deg, rgba(212,168,92,0.1), rgba(195,149,70,0.05))', borderColor: 'rgba(212,168,92,0.3)' } : {}}>
+                <div className={styles.subPlan}>
+                  <div className={styles.subPlanName} style={user.premiumTier === 'marriage' ? { color: 'var(--gold)' } : { color: 'var(--sage)' }}>
+                    {user.premiumTier === 'marriage' ? 'Marriage Track 👑' : 'Intent Plus ⭐'}
+                  </div>
+                  <div className={styles.subPlanDesc}>Active · Renews on {new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString()}</div>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+                <button className={styles.dangerBtn} onClick={() => alert('Subscription paused for 30 days.')}>
+                  Pause Subscription
+                </button>
+                <button className={styles.dangerBtn} style={{ color: 'var(--blush)' }} onClick={() => {
+                  if(confirm('Cancel subscription? You will keep your benefits until the end of your billing cycle.')) {
+                    alert('Subscription cancelled. No aggressive retention surveys shown.');
+                  }
+                }}>
+                  Cancel Subscription
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* DANGER */}
