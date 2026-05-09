@@ -1,73 +1,241 @@
-.page { display: flex; flex-direction: column; padding-bottom: 24px; }
+/* ══ Profile Page V2 ════════════════════════════════════════ */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding-bottom: 24px;
+}
 
-/* HERO */
-.heroWrap { position: relative; height: 320px; flex-shrink: 0; overflow: hidden; }
-.heroGradient { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,23,40,0.1) 0%, transparent 25%, rgba(13,23,40,0.97) 85%); z-index: 1; }
-.heroContent { position: absolute; bottom: 14px; left: 18px; right: 18px; z-index: 2; }
-.heroNameRow { display: flex; align-items: center; gap: 8px; }
-.heroName { font-size: 1.75rem; font-weight: 900; letter-spacing: -0.03em; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-.heroVerify { background: rgba(123,163,140,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(123,163,140,0.4); color: var(--sage-light); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; font-weight: 700; }
-.heroProfession { font-size: 0.875rem; color: rgba(255,255,255,0.75); margin-top: 2px; }
-.heroBadges { display: flex; gap: 6px; margin-top: 8px; }
-.editPhotoBtn { position: absolute; top: 14px; right: 14px; z-index: 3; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); border-radius: var(--radius-full); padding: 5px 12px; font-size: 0.75rem; cursor: pointer; }
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  background: rgba(18,19,22,0.92);
+  backdrop-filter: blur(16px);
+  z-index: 10;
+}
 
-/* SCORE STRIP */
-.scoreStrip { display: flex; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); gap: 0; }
-.scoreTile { flex: 1; text-align: center; }
-.scoreTileVal { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
-.scoreTileLbl { font-size: 0.5625rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
-.scoreDivider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; }
+.headerTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+  text-align: center;
+  margin-left: 24px; /* offset the right icon to keep centered */
+}
 
-/* COMPLETION */
-.completionBanner { padding: 10px 16px; background: rgba(212,168,92,0.05); border-bottom: 1px solid var(--border); }
-.completionBarWrap { margin-bottom: 5px; }
-.completionBar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-.completionFill { height: 100%; background: linear-gradient(90deg, var(--gold-dark, #B08A40), var(--gold-light)); border-radius: 2px; transition: width 1s cubic-bezier(0.22,1,0.36,1); }
-.completionNote { font-size: 0.75rem; color: var(--gold); }
+.settingsBtn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  padding: 4px;
+  cursor: pointer;
+}
 
-/* SECTION */
-.section { padding: 14px 16px; border-top: 1px solid var(--border); }
-.sLabel { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 700; margin-bottom: 10px; }
+/* ── Hero ── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 24px 16px;
+  text-align: center;
+}
 
-/* SNAPSHOT */
-.snapshotCard { background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 15px; }
-.snapshotText { font-size: 0.875rem; color: var(--warm-white); line-height: 1.65; margin-bottom: 12px; font-style: italic; }
-.traitsWrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-.snapshotMeta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 12px; border-top: 1px solid var(--border); }
-.metaItem {}
-.metaLbl { font-size: 0.5625rem; color: var(--muted-dark); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
-.metaVal { font-size: 0.8rem; font-weight: 600; color: var(--sage-light); }
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid var(--border);
+  margin-bottom: 16px;
+}
 
-/* ACHIEVEMENTS */
-.achieveGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.achieveTile { background: var(--navy-light); border: 1px solid rgba(123,163,140,0.2); border-radius: var(--radius-lg); padding: 12px 8px; display: flex; flex-direction: column; align-items: center; gap: 5px; position: relative; }
-.achieveLocked { border-color: var(--border); }
-.achieveEmoji { font-size: 1.375rem; line-height: 1; }
-.achieveName { font-size: 0.5625rem; color: var(--sage-light); text-align: center; font-weight: 600; line-height: 1.3; }
-.achieveLocked .achieveName { color: var(--muted-dark); }
-.achieveEarned { position: absolute; top: 5px; right: 6px; font-size: 0.5625rem; color: var(--sage); font-weight: 800; }
+.name {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
 
-/* PROMPTS */
-.promptCard { background: var(--navy-light); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; margin-bottom: 8px; }
-.promptCard:last-child { margin-bottom: 0; }
-.promptQ { font-size: 0.6875rem; color: var(--sage); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-.promptA { font-size: 0.9375rem; color: var(--warm-white); line-height: 1.6; font-style: italic; }
+.meta {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
 
-/* MODULES CARD */
-.modulesCard { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, rgba(123,163,140,0.06), rgba(27,42,74,0)); border: 1px solid rgba(123,163,140,0.2); border-radius: var(--radius-lg); padding: 14px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
-.modulesCard:hover { border-color: rgba(123,163,140,0.4); transform: translateX(2px); }
-.modulesLeft { flex: 1; }
-.modulesTitle { font-size: 0.9375rem; font-weight: 700; color: var(--warm-white); }
-.modulesSub { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
-.modulesTier { margin-top: 6px; }
-.modulesTierBadge { font-size: 0.6875rem; color: var(--gold); background: rgba(212,168,92,0.1); border: 1px solid rgba(212,168,92,0.25); border-radius: var(--radius-full); padding: 3px 10px; }
-.modulesArrow { color: var(--sage); font-size: 1.125rem; flex-shrink: 0; }
+.verifyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: rgba(129,178,154,0.15);
+  color: var(--sage);
+  border-radius: var(--r-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
 
-/* UPGRADE */
-.upgradeCard { margin: 12px 16px; background: linear-gradient(135deg, rgba(212,168,92,0.1), rgba(27,42,74,0)); border: 1px solid rgba(212,168,92,0.28); border-radius: var(--radius-xl); padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
-.upgradeLeft { flex: 1; }
-.upgradeTitle { font-weight: 700; font-size: 0.9375rem; color: var(--gold-light); }
-.upgradeSub { font-size: 0.75rem; color: var(--muted); margin-top: 3px; }
+/* ── Score & Stats ── */
+.scoreStatsRow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 24px 24px;
+}
 
-/* ACTIONS */
-.actions { padding: 0 16px; }
+.intentScoreCard {
+  background: var(--bg-container);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scoreLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.scoreValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--coral);
+}
+
+.streak {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.streakLabel {
+  font-size: 0.875rem;
+  color: var(--text-body);
+  font-weight: 500;
+}
+
+.statsRow {
+  display: flex;
+  gap: 12px;
+}
+
+.statCard {
+  flex: 1;
+  background: var(--bg-container);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ── Prompts ── */
+.prompts {
+  padding: 0 24px 24px;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.promptCard {
+  background: var(--bg-container);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.promptQ {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.promptA {
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* ── Perks & Upgrade ── */
+.cards {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.perkCard {
+  background: rgba(129,178,154,0.08);
+  border: 1px solid rgba(129,178,154,0.2);
+  border-radius: var(--r-xl);
+  padding: 20px;
+}
+
+.upgradeCard {
+  background: rgba(224,122,95,0.08);
+  border: 1px solid rgba(224,122,95,0.2);
+  border-radius: var(--r-xl);
+  padding: 20px;
+}
+
+.cardTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.cardSub {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* ── Footer Link ── */
+.settingsLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  margin: 0 24px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background var(--dur-fast);
+}
+.settingsLink:hover {
+  background: var(--bg-container);
+  color: var(--text-body);
+}

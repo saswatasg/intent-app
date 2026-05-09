@@ -1,171 +1,106 @@
 'use client'
-import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import MobileShell from '@/components/layout/MobileShell'
-import { CURRENT_USER, ACHIEVEMENTS } from '@/lib/mockData'
-import { MODULES, getModuleTier } from '@/lib/modules'
+import { CURRENT_USER } from '@/lib/mockData'
 import styles from './page.module.css'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const user = CURRENT_USER
-
+  
   return (
     <MobileShell>
       <div className={styles.page}>
-        {/* HERO — full bleed photo */}
-        <div className={styles.heroWrap}>
-          <Image src={user.photo} alt={user.name} fill style={{ objectFit: 'cover', objectPosition: 'top' }} sizes="390px" priority />
-          <div className={styles.heroGradient} />
-          <div className={styles.heroContent}>
-            <div className={styles.heroNameRow}>
-              <h1 className={styles.heroName}>{user.name}, {user.age}</h1>
-              <div className={styles.heroVerify}>✓</div>
-            </div>
-            <div className={styles.heroProfession}>{user.city} · {user.profession}</div>
-            <div className={styles.heroBadges}>
-              <span className="chip chip-sage" style={{ fontSize: '0.6875rem' }}>💚 Long-term</span>
-              <span className="chip" style={{ fontSize: '0.6875rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.8)' }}>Free plan</span>
-            </div>
-          </div>
-          <button className={styles.editPhotoBtn} onClick={() => router.push('/settings')}>Edit ✏</button>
-        </div>
+        {/* Header */}
+        <header className={styles.header}>
+          <div style={{ width: 32 }} /> {/* spacer */}
+          <div className={styles.headerTitle}>Profile</div>
+          <button className={styles.settingsBtn} onClick={() => router.push('/settings')} aria-label="Settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        </header>
 
-        {/* Intent score strip */}
-        <div className={styles.scoreStrip}>
-          <div className={styles.scoreTile}>
-            <div className={styles.scoreTileVal} style={{ color: 'var(--sage)' }}>{user.intentScore}</div>
-            <div className={styles.scoreTileLbl}>Intent score</div>
+        {/* Hero */}
+        <section className={styles.hero}>
+          <div className={styles.avatar}>
+            <Image src={CURRENT_USER.photo} alt={CURRENT_USER.name} fill style={{ objectFit: 'cover' }} sizes="96px" />
           </div>
-          <div className={styles.scoreDivider} />
-          <div className={styles.scoreTile}>
-            <div className={styles.scoreTileVal} style={{ color: '#FF8C00' }}>🔥 {user.streak}</div>
-            <div className={styles.scoreTileLbl}>Day streak</div>
+          <h1 className={styles.name}>{CURRENT_USER.name}, {CURRENT_USER.age}</h1>
+          <div className={styles.meta}>{CURRENT_USER.city} · {CURRENT_USER.profession}</div>
+          <div className={styles.verifyBadge}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Verified
           </div>
-          <div className={styles.scoreDivider} />
-          <div className={styles.scoreTile}>
-            <div className={styles.scoreTileVal} style={{ color: 'var(--gold)' }}>{user.profileCompletion}%</div>
-            <div className={styles.scoreTileLbl}>Profile strength</div>
-          </div>
-        </div>
+        </section>
 
-        {/* Profile completion bar */}
-        {user.profileCompletion < 100 && (
-          <div className={styles.completionBanner}>
-            <div className={styles.completionBarWrap}>
-              <div className={styles.completionBar}>
-                <div className={styles.completionFill} style={{ width: `${user.profileCompletion}%` }} />
-              </div>
+        {/* Score & Stats */}
+        <section className={styles.scoreStatsRow}>
+          <div className={styles.intentScoreCard}>
+            <div>
+              <div className={styles.scoreLabel}>Intent Score</div>
+              <div className={styles.scoreValue}>{CURRENT_USER.intentScore}</div>
             </div>
-            <div className={styles.completionNote}>Add a voice intro to reach 100% — unlocks 2× match priority</div>
-          </div>
-        )}
-
-        {/* Compatibility Modules */}
-        <div className={styles.section}>
-          <div className={styles.sLabel}>Compatibility modules</div>
-          <Link href="/modules" className={styles.modulesCard}>
-            <div className={styles.modulesLeft}>
-              <div className={styles.modulesTitle}>🧠 1/7 modules completed</div>
-              <div className={styles.modulesSub}>Complete more modules to improve match accuracy</div>
-              <div className={styles.modulesTier}>
-                <span className={styles.modulesTierBadge}>🔓 Starter · ~50% accuracy</span>
-              </div>
-            </div>
-            <span className={styles.modulesArrow}>→</span>
-          </Link>
-        </div>
-
-        {/* Personality snapshot */}
-        <div className={styles.section}>
-          <div className={styles.sLabel}>Your personality</div>
-          <div className={styles.snapshotCard}>
-            <p className={styles.snapshotText}>{user.personalitySnapshot.summary}</p>
-            <div className={styles.traitsWrap}>
-              {user.personalitySnapshot.traits.map(t => <span key={t} className="chip chip-sage" style={{ fontSize: '0.6875rem' }}>{t}</span>)}
-            </div>
-            <div className={styles.snapshotMeta}>
-              <div className={styles.metaItem}><div className={styles.metaLbl}>Attachment</div><div className={styles.metaVal}>{user.personalitySnapshot.attachmentStyle}</div></div>
-              <div className={styles.metaItem}><div className={styles.metaLbl}>Conflict</div><div className={styles.metaVal}>{user.personalitySnapshot.conflictStyle}</div></div>
-              <div className={styles.metaItem}><div className={styles.metaLbl}>Love language</div><div className={styles.metaVal}>{user.personalitySnapshot.loveLanguage}</div></div>
+            <div className={styles.streak}>
+              <div className={styles.streakLabel}>{CURRENT_USER.streak}-day streak</div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Consistent</div>
             </div>
           </div>
-        </div>
-
-        {/* Achievements */}
-        <div className={styles.section}>
-          <div className={styles.sLabel}>Achievements</div>
-          <div className={styles.achieveGrid}>
-            {ACHIEVEMENTS.map(a => (
-              <div key={a.id} className={`${styles.achieveTile} ${!a.earned ? styles.achieveLocked : ''}`} title={a.desc}>
-                <div className={styles.achieveEmoji} style={{ filter: a.earned ? 'none' : 'grayscale(1) opacity(0.35)' }}>{a.emoji}</div>
-                <div className={styles.achieveName}>{a.title}</div>
-                {a.earned && <div className={styles.achieveEarned}>✓</div>}
-              </div>
-            ))}
+          
+          <div className={styles.statsRow}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>3</div>
+              <div className={styles.statLabel}>Modules</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>82%</div>
+              <div className={styles.statLabel}>Avg Comp</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>6</div>
+              <div className={styles.statLabel}>Matches</div>
+            </div>
           </div>
-        </div>
+        </section>
 
         {/* Prompts */}
-        <div className={styles.section}>
-          <div className={styles.sLabel}>In your words</div>
-          {user.prompts.map((p, i) => (
+        <section className={styles.prompts}>
+          <h2 className={styles.sectionTitle}>Your prompts</h2>
+          {CURRENT_USER.prompts.slice(0, 2).map((p, i) => (
             <div key={i} className={styles.promptCard}>
               <div className={styles.promptQ}>{p.q}</div>
               <div className={styles.promptA}>"{p.a}"</div>
             </div>
           ))}
-        </div>
+        </section>
 
-        {/* Refer */}
-        <div className={styles.upgradeCard} style={{ background: 'linear-gradient(135deg, rgba(37,211,102,0.1), rgba(123,163,140,0.05))', borderColor: 'rgba(37,211,102,0.3)', marginBottom: '16px' }}>
-          <div className={styles.upgradeLeft}>
-            <div className={styles.upgradeTitle} style={{ color: 'var(--sage-light)' }}>Invite friends, get perks ✨</div>
-            <div className={styles.upgradeSub}>Earn free Plus, extra matches, and badges.</div>
+        {/* Perks & Upgrade */}
+        <section className={styles.cards}>
+          <div className={styles.perkCard}>
+            <div className={styles.cardTitle}>Invite friends, earn perks</div>
+            <div className={styles.cardSub}>Share your code to unlock Plus, extra matches, and status badges.</div>
+            <button className="btn btn-outline-sage btn-sm" onClick={() => router.push('/refer')}>Share referral code</button>
           </div>
-          <button className="btn btn-sage btn-sm" onClick={() => router.push('/refer')} style={{ whiteSpace: 'nowrap' }}>Invite</button>
-        </div>
 
-        {/* Upgrade / Premium Status */}
-        {(!user.premiumTier || user.premiumTier === 'free' || user.premiumTier === 'plus') && (
-          <div className={styles.upgradeCard} onClick={() => router.push('/upgrade')} style={{ cursor: 'pointer' }}>
-            <div className={styles.upgradeLeft}>
-              <div className={styles.upgradeTitle}>
-                {user.premiumTier === 'plus' ? 'Upgrade to Marriage Track ⭐' : 'Unlock Premium ⭐'}
-              </div>
-              <div className={styles.upgradeSub}>
-                {user.premiumTier === 'plus' ? 'Get coaching and priority matching' : '4 matches/cycle · Unlimited insights · See who passed on you'}
-              </div>
-            </div>
-            <button className="btn btn-gold btn-sm" style={{ whiteSpace: 'nowrap' }} onClick={(e) => { e.stopPropagation(); router.push('/upgrade') }}>
-              {user.premiumTier === 'plus' ? 'View' : '₹499/mo'}
-            </button>
+          <div className={styles.upgradeCard}>
+            <div className={styles.cardTitle}>Unlock Intent Plus</div>
+            <div className={styles.cardSub}>More signal. Less noise. Access full compatibility reports.</div>
+            <button className="btn btn-primary btn-sm" onClick={() => router.push('/upgrade')}>₹499 / mo</button>
           </div>
-        )}
+        </section>
 
-        {user.premiumTier === 'marriage' && (
-          <div className={styles.upgradeCard} style={{ background: 'linear-gradient(135deg, rgba(212,168,92,0.1), rgba(195,149,70,0.05))', borderColor: 'rgba(212,168,92,0.3)' }}>
-            <div className={styles.upgradeLeft}>
-              <div className={styles.upgradeTitle} style={{ color: 'var(--gold)' }}>Marriage Track Active 👑</div>
-              <div className={styles.upgradeSub}>Priority matching and coaching unlocked.</div>
-            </div>
-            <button className="btn btn-gold btn-sm" onClick={() => router.push('/coaching')} style={{ whiteSpace: 'nowrap' }}>Book Coaching</button>
-          </div>
-        )}
-
-        {user.premiumTier === 'free_women' && (
-          <div className={styles.upgradeCard} style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'var(--border-light)', justifyContent: 'center' }}>
-            <div className={styles.upgradeTitle} style={{ color: 'var(--warm-white)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ color: 'var(--sage)' }}>✓</span> Verified — Premium features included
-            </div>
-          </div>
-        )}
-
-        {/* Edit */}
-        <div className={styles.actions}>
-          <Link href="/settings" className={`btn btn-ghost btn-full`}>Settings & preferences →</Link>
-        </div>
+        {/* Footer */}
+        <Link href="/profile/preferences" className={styles.settingsLink}>
+          <span>Settings & preferences</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </Link>
       </div>
     </MobileShell>
   )

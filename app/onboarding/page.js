@@ -1,330 +1,217 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ENTRY_MODULE } from '@/lib/modules'
+import MobileShell from '@/components/layout/MobileShell'
 import styles from './page.module.css'
 
-// ── Progress Bar ────────────────────────────────────────────────────────────
-function ProgressBar({ step, total, label }) {
-  return (
-    <div className={styles.progressWrap}>
-      <div className={styles.progressTrack}>
-        <div className={styles.progressFill} style={{ width: `${(step / total) * 100}%` }} />
-      </div>
-      <div className={styles.progressLabel}>{label}</div>
-    </div>
-  )
-}
-
-// ── Slider Input ────────────────────────────────────────────────────────────
-function SliderInput({ value, onChange, leftLabel, rightLabel }) {
-  return (
-    <div className={styles.sliderWrap}>
-      <input type="range" min="0" max="100" value={value} onChange={e => onChange(Number(e.target.value))} className={styles.slider} />
-      <div className={styles.sliderLabels}>
-        <span>{leftLabel}</span>
-        <span>{rightLabel}</span>
-      </div>
-    </div>
-  )
-}
-
-// ── SECTION A: Phone Auth ───────────────────────────────────────────────────
-function SectionAuth({ data, setData, onNext }) {
-  const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
-  const [step, setStep] = useState('phone')
-  const [loading, setLoading] = useState(false)
-
-  const handleSendOtp = async () => {
-    setLoading(true)
-    setTimeout(() => { setLoading(false); setStep('otp') }, 1000)
+const QS_QUESTIONS = [
+  {
+    id: 'qs1', category: 'SCENARIO',
+    q: 'You come home after a hard day. Your partner also had a rough day. What do you do?',
+    options: [
+      { id: 'a', text: 'Give them space and decompress alone first' },
+      { id: 'b', text: 'Sit together in silence — presence without pressure' },
+      { id: 'c', text: 'Talk it through immediately — processing means connection' },
+      { id: 'd', text: 'Do something fun together to reset the energy' }
+    ]
+  },
+  {
+    id: 'qs2', category: 'VALUES',
+    q: 'When thinking about long-term partnership, which feels most true to you?',
+    options: [
+      { id: 'a', text: 'We should challenge each other to grow' },
+      { id: 'b', text: 'We should be each other\'s safe harbor' },
+      { id: 'c', text: 'We should build a shared life project together' },
+      { id: 'd', text: 'We should maintain strong independent lives' }
+    ]
+  },
+  {
+    id: 'qs3', category: 'COMMUNICATION',
+    q: 'During a disagreement, what is your instinct?',
+    options: [
+      { id: 'a', text: 'Address it immediately, even if it\'s messy' },
+      { id: 'b', text: 'Take time to process before speaking' },
+      { id: 'c', text: 'Keep the peace and let small things go' },
+      { id: 'd', text: 'Write down my thoughts to be clear' }
+    ]
+  },
+  {
+    id: 'qs4', category: 'LIFESTYLE',
+    q: 'How do you prefer to spend your disposable income?',
+    options: [
+      { id: 'a', text: 'Experiences, travel, dining out' },
+      { id: 'b', text: 'Saving and investing for the future' },
+      { id: 'c', text: 'Upgrading my daily life (home, convenience)' },
+      { id: 'd', text: 'Hobbies, gear, or personal projects' }
+    ]
+  },
+  {
+    id: 'qs5', category: 'INTENT',
+    q: 'What is your current timeline for a serious commitment?',
+    options: [
+      { id: 'a', text: 'Ready now for the right person' },
+      { id: 'b', text: 'Exploring intentionally, seeing where it goes' },
+      { id: 'c', text: 'Focused on career, but open to it' },
+      { id: 'd', text: 'Looking for connection without labels' }
+    ]
   }
-  const handleVerify = async () => {
-    setLoading(true)
-    setTimeout(() => { setLoading(false); setData({ ...data, phone }); onNext() }, 1000)
-  }
+]
 
+// ─── GATE COMPONENT ───
+function SectionIntent({ onNext }) {
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionEmoji}>🔐</div>
-        <h2 className={styles.sectionTitle}>Your intentional space</h2>
-        <p className={styles.sectionSub}>We verify everyone to maintain a high-intent, safe community.</p>
-      </div>
-      <div className={styles.formGrid}>
-        {step === 'phone' ? (
-          <div className={styles.field}>
-            <label className={styles.label}>Phone number</label>
-            <input className="input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 98765 43210" />
-            <button className="btn btn-primary btn-full" style={{ marginTop: 24 }} onClick={handleSendOtp} disabled={phone.length < 10 || loading}>
-              {loading ? 'Sending...' : 'Send code'}
-            </button>
-          </div>
-        ) : (
-          <div className={styles.field}>
-            <label className={styles.label}>Enter the 6-digit code</label>
-            <input className="input" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="000000" maxLength={6} style={{ letterSpacing: '0.5em', textAlign: 'center', fontSize: '1.25rem' }} />
-            <button className="btn btn-primary btn-full" style={{ marginTop: 24 }} onClick={handleVerify} disabled={otp.length < 6 || loading}>
-              {loading ? 'Verifying...' : 'Verify & Continue'}
-            </button>
-          </div>
-        )}
+    <div className={styles.gateContent}>
+      <div className={styles.gateMark}>◈</div>
+      <h1 className={styles.gateTitle}>Intent is for serious dating.</h1>
+      <p className={styles.gateText}>
+        We built this for people who are done with casual swiping. If you're looking for hookups or penpals, this isn't the app for you.
+      </p>
+      <div className={styles.gateOptions}>
+        <button className={styles.gateOption} onClick={onNext}>
+          I'm looking for something real
+        </button>
+        <button className={styles.gateOption} style={{opacity: 0.6}} onClick={() => alert('Thanks for being honest. Intent might not be the right fit right now.')}>
+          I'm just browsing casually
+        </button>
       </div>
     </div>
   )
 }
 
-// ── SECTION B: Identity ─────────────────────────────────────────────────────
-function SectionIdentity({ data, setData, onNext }) {
-  const complete = data.name && data.gender && data.location
+// ─── ENTRY COMPONENT ───
+function QuickStartModule({ onNext }) {
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <div className={styles.sectionEmoji}>👤</div>
-        <h2 className={styles.sectionTitle}>Let&apos;s start with the basics</h2>
-      </div>
-      <div className={styles.formGrid}>
-        <div className={styles.field}>
-          <label className={styles.label}>Your first name</label>
-          <input className="input" value={data.name || ''} onChange={e => setData({...data, name: e.target.value})} placeholder="Arjun" />
+    <div className={styles.entryContent}>
+      <h1 className={styles.entryTitle}>Five quick questions to set the foundation.</h1>
+      <p className={styles.entrySub}>
+        We don't use swiping to figure you out. We ask. These five questions calibrate your initial match pool.
+      </p>
+      
+      <div className={styles.entryBullets}>
+        <div className={styles.entryBullet}>
+          <svg className={styles.bulletIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          <span className={styles.bulletText}>Takes 2 minutes</span>
         </div>
-        <div className={styles.field}>
-          <label className={styles.label}>I identify as</label>
-          <div className={styles.optionRow}>
-            {['Man', 'Woman', 'Non-binary'].map(g => (
-              <button key={g} className={`${styles.optionBtn} ${data.gender === g ? styles.optionBtnActive : ''}`} onClick={() => setData({...data, gender: g})}>{g}</button>
+        <div className={styles.entryBullet}>
+          <svg className={styles.bulletIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          <span className={styles.bulletText}>Improves match quality instantly</span>
+        </div>
+        <div className={styles.entryBullet}>
+          <svg className={styles.bulletIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span className={styles.bulletText}>Your answers remain private</span>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '48px' }}>
+        <button className="btn btn-primary btn-full" onClick={onNext}>Begin</button>
+      </div>
+    </div>
+  )
+}
+
+// ─── QUESTION COMPONENT ───
+function QuestionView({ index, total, onNext, onBack }) {
+  const q = QS_QUESTIONS[index]
+  const [selected, setSelected] = useState(null)
+  
+  // reset on next
+  useEffect(() => setSelected(null), [index])
+
+  return (
+    <div className={styles.scrollArea}>
+      <div className={styles.topBar}>
+        <button className={styles.backBtn} onClick={onBack}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <div className={styles.progressRow}>
+          <div className={styles.dots}>
+            {QS_QUESTIONS.map((_, i) => (
+              <div key={i} className={`${styles.dot} ${i <= index ? styles.dotFilled : ''}`} />
             ))}
           </div>
+          <div className={styles.progressText}>{index + 1} of {total}</div>
         </div>
-        <div className={styles.field}>
-          <label className={styles.label}>City</label>
-          <div className={styles.optionRow}>
-            {['Bangalore', 'Mumbai', 'Delhi', 'Pune'].map(c => (
-              <button key={c} className={`${styles.optionBtn} ${data.location === c ? styles.optionBtnActive : ''}`} onClick={() => setData({...data, location: c})}>{c}</button>
-            ))}
-          </div>
-        </div>
-        <div className={styles.field}>
-          <label className={styles.label}>Photo <span className={styles.note}>(Just 1 for now)</span></label>
-          <div className={styles.photoGrid}>
-            <div className={`${styles.photoSlot} ${data.photos?.length ? styles.photoSlotFilled : ''}`} onClick={() => setData({...data, photos: [1]})}>
-              {data.photos?.length ? <span>📷</span> : <span className={styles.photoAdd}>+</span>}
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.category}>{q.category}</div>
+        <h2 className={styles.question}>{q.q}</h2>
+
+        <div className={styles.options}>
+          {q.options.map((opt) => (
+            <div 
+              key={opt.id}
+              className={`${styles.optionCard} ${selected === opt.id ? styles.optionCardSelected : ''}`}
+              onClick={() => setSelected(opt.id)}
+            >
+              <div className={styles.optLetter}>{opt.id.toUpperCase()}</div>
+              <div className={styles.optText}>{opt.text}</div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
-      <button className={`btn btn-primary btn-full ${!complete ? styles.btnDisabled : ''}`} onClick={onNext} disabled={!complete}>
-        Continue →
-      </button>
+
+      <div className={styles.footer}>
+        <button 
+          className="btn btn-primary btn-full" 
+          disabled={!selected}
+          onClick={() => onNext(q.id, selected)}
+          style={{ opacity: selected ? 1 : 0.5 }}
+        >
+          Next
+        </button>
+        <div className={styles.subText}>Your matches get sharper as you do.</div>
+      </div>
     </div>
   )
 }
 
-// ── SECTION C: Intent Gate ──────────────────────────────────────────────────
-function SectionIntent({ data, setData, onNext }) {
-  const INTENT_OPTIONS = [
-    { value: 'long_term', label: 'I want a serious relationship', emoji: '💚', allowed: true },
-    { value: 'marriage', label: "I'm ready for marriage in the next 2-3 years", emoji: '💛', allowed: true },
-    { value: 'casual', label: 'Something casual / just looking around', emoji: '🔴', allowed: false },
-  ]
-  const [blocked, setBlocked] = useState(false)
-
-  const handleIntent = (opt) => {
-    if (!opt.allowed) { setBlocked(true); return }
-    setData({...data, intentLevel: opt.value})
-    setBlocked(false)
-  }
-
-  return (
-    <div className={styles.section}>
-      {blocked ? (
-        <div className={styles.softGate}>
-          <div className={styles.gateEmoji}>🌱</div>
-          <h2 className={styles.gateTitle}>Built for intent</h2>
-          <p className={styles.gateSub}>Intent isn't built for casual. We respect that you might be there now — come back when you're ready for something real. We'll be here.</p>
-          <button className="btn btn-outline-sage btn-full" onClick={() => setBlocked(false)}>← Go back</button>
-        </div>
-      ) : (
-        <>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionEmoji}>🎯</div>
-            <h2 className={styles.sectionTitle}>What are you looking for?</h2>
-            <p className={styles.sectionSub}>This gates who you&apos;ll see and who sees you.</p>
-          </div>
-          <div className={styles.intentOptions}>
-            {INTENT_OPTIONS.map(opt => (
-              <button key={opt.value} className={`${styles.intentOption} ${data.intentLevel === opt.value ? styles.intentOptionActive : ''} ${!opt.allowed ? styles.intentOptionCasual : ''}`} onClick={() => handleIntent(opt)}>
-                <span className={styles.intentEmoji}>{opt.emoji}</span>
-                <span className={styles.intentLabel}>{opt.label}</span>
-                {data.intentLevel === opt.value && <span className={styles.intentCheck}>✓</span>}
-              </button>
-            ))}
-          </div>
-          <button className={`btn btn-primary btn-full ${!data.intentLevel ? styles.btnDisabled : ''}`} onClick={onNext} disabled={!data.intentLevel} style={{ marginTop: 'auto' }}>
-            Almost there — 5 quick questions →
-          </button>
-        </>
-      )}
-    </div>
-  )
-}
-
-// ── SECTION D: Quick Start (Entry Module) ───────────────────────────────────
-function QuickStartModule({ onComplete }) {
-  const mod = ENTRY_MODULE
-  const [currentQ, setCurrentQ] = useState(0)
-  const [answers, setAnswers] = useState({})
-
-  const q = mod.questions[currentQ]
-  const totalQ = mod.questions.length
-  const answered = answers[q.id] !== undefined
-
-  const handleNext = () => {
-    if (currentQ < totalQ - 1) {
-      setCurrentQ(prev => prev + 1)
-    } else {
-      onComplete(mod.id, answers)
-    }
-  }
-
-  return (
-    <div className={styles.section}>
-      {/* Quick Start header */}
-      <div className={styles.quickStartHeader}>
-        <div className={styles.quickStartBadge}>⚡ Quick Start</div>
-        <div className={styles.quickStartCount}>{currentQ + 1} of {totalQ}</div>
-      </div>
-
-      {/* Question progress dots */}
-      <div className={styles.qDots}>
-        {mod.questions.map((_, i) => (
-          <div key={i} className={`${styles.qDot} ${i < currentQ ? styles.qDotDone : ''} ${i === currentQ ? styles.qDotActive : ''}`} />
-        ))}
-      </div>
-
-      {/* Intro text on first question */}
-      {currentQ === 0 && (
-        <div className={styles.quickStartIntro} style={{ display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'center', marginBottom: '16px' }}>
-          <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--warm-white)' }}>Five quick questions to set the foundation. We'll build from here.</div>
-          <div style={{ fontSize: '0.8125rem', color: 'var(--muted)' }}>Your matches get sharper as you do.</div>
-        </div>
-      )}
-
-      {/* Question card */}
-      <div className={styles.questionCard} key={q.id}>
-        <div className={styles.questionType}>
-          {q.type === 'scenario' ? '🎭 Scenario' : q.type === 'slider' ? '📊 Spectrum' : '📋 Choose one'}
-        </div>
-        <h3 className={styles.questionText}>{q.question}</h3>
-
-        {q.type === 'slider' ? (
-          <div style={{ marginTop: 20 }}>
-            <SliderInput
-              value={answers[q.id] ?? 50}
-              onChange={(val) => setAnswers(prev => ({...prev, [q.id]: val}))}
-              leftLabel={q.leftLabel}
-              rightLabel={q.rightLabel}
-            />
-          </div>
-        ) : (
-          <div className={styles.answerOptions}>
-            {q.options.map((opt, i) => {
-              const letter = String.fromCharCode(65 + i)
-              const isSelected = answers[q.id] === opt.trait
-              return (
-                <button
-                  key={i}
-                  className={`${styles.answerOption} ${isSelected ? styles.answerOptionActive : ''}`}
-                  onClick={() => setAnswers(prev => ({...prev, [q.id]: opt.trait}))}
-                >
-                  <span className={styles.answerLetter}>{letter}</span>
-                  <span>{opt.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Next button */}
-      <button
-        className={`btn btn-primary btn-full ${!answered && q.type !== 'slider' ? styles.btnDisabled : ''}`}
-        onClick={handleNext}
-        disabled={!answered && q.type !== 'slider'}
-        style={{ marginTop: 'auto' }}
-      >
-        {currentQ < totalQ - 1 ? 'Next →' : "Start matching ✓"}
-      </button>
-    </div>
-  )
-}
-
-// ── MAIN ONBOARDING PAGE ────────────────────────────────────────────────────
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep] = useState(1) // 1=auth, 2=identity, 3=intent, 4=quick-start
-  const [data, setData] = useState({ photos: [] })
+  // Steps: -2 = gate, -1 = intro, 0-4 = questions, 5 = done
+  const [step, setStep] = useState(-2)
+  const [answers, setAnswers] = useState({})
 
-  // Capture referral code if present
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const refCode = urlParams.get('ref');
-      if (refCode) {
-        localStorage.setItem('intent_referred_by', refCode);
-      }
+  const handleNextGate = () => setStep(-1)
+  const handleNextIntro = () => setStep(0)
+  
+  const handleAnswer = (qId, optionId) => {
+    setAnswers(prev => ({ ...prev, [qId]: optionId }))
+    if (step < QS_QUESTIONS.length - 1) {
+      setStep(s => s + 1)
+    } else {
+      // Done -> home
+      router.push('/home')
     }
-  }, []);
-
-  const handleEntryComplete = (moduleId, answers) => {
-    // Save entry module completion and go straight to home
-    localStorage.setItem('intent_onboarded', 'true')
-    localStorage.setItem('intent_completed_modules', JSON.stringify([moduleId]))
-    localStorage.setItem('intent_answers', JSON.stringify({ [moduleId]: answers }))
-    router.push('/home')
   }
 
-  const STEP_LABELS = ['Verify', 'Identity', 'Intent', 'Quick Start']
+  const handleBack = () => {
+    if (step > -1) setStep(s => s - 1)
+    else if (step === -1) setStep(-2)
+  }
 
   return (
-    <div className={styles.page}>
-      <div className={styles.phoneBg}>
-        <div className={styles.bgOrb1} />
-        <div className={styles.bgOrb2} />
+    <MobileShell>
+      <div className={styles.page}>
+        {step === -2 && <SectionIntent onNext={handleNextGate} />}
+        {step === -1 && <QuickStartModule onNext={handleNextIntro} />}
+        {step >= 0 && step < QS_QUESTIONS.length && (
+          <QuestionView 
+            index={step} 
+            total={QS_QUESTIONS.length}
+            onNext={handleAnswer} 
+            onBack={handleBack} 
+          />
+        )}
       </div>
-
-      <div className={styles.phone}>
-        {/* Top bar */}
-        <div className={styles.topBar}>
-          <div className={styles.topLogo}>
-            <span className={styles.logoMark}>◈</span>
-            <span>intent</span>
-          </div>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button className="btn btn-ghost btn-sm" style={{ padding: '6px 10px', fontSize: '0.7rem' }} onClick={() => {
-              localStorage.setItem('intent_onboarded', 'true');
-              router.push('/home');
-            }}>Skip (Dev)</button>
-            {step > 1 && step < 4 && (
-              <button className="btn btn-ghost btn-sm" onClick={() => setStep(step - 1)}>← Back</button>
-            )}
-          </div>
-        </div>
-
-        <ProgressBar
-          step={step}
-          total={4}
-          label={`Step ${step} of 4 · ${STEP_LABELS[step - 1]}`}
-        />
-
-        <div className={styles.body}>
-          {step === 1 && <SectionAuth data={data} setData={setData} onNext={() => setStep(2)} />}
-          {step === 2 && <SectionIdentity data={data} setData={setData} onNext={() => setStep(3)} />}
-          {step === 3 && <SectionIntent data={data} setData={setData} onNext={() => setStep(4)} />}
-          {step === 4 && <QuickStartModule onComplete={handleEntryComplete} />}
-        </div>
-      </div>
-    </div>
+    </MobileShell>
   )
 }
